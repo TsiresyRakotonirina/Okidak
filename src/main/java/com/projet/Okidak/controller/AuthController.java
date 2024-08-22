@@ -68,6 +68,12 @@ public class AuthController {
         return "users";
     }
 
+    // handler method to handle home
+    @GetMapping("/home")
+    public String hom(){
+        return "home";
+    }
+
     // handler method to handle login request
     @GetMapping("/login")
     public String login(){
