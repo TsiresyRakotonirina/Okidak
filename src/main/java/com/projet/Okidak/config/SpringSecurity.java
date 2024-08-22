@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.projet.Okidak.security.CustomAuthSuccessHandler;
+
 @Configuration
 @EnableWebSecurity
 public class SpringSecurity {
@@ -32,11 +34,14 @@ public class SpringSecurity {
                         authorize.requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/index").permitAll()
                                 .requestMatchers("/users").hasRole("ADMIN")
+                                .requestMatchers("/home").hasRole("USER")
+                                // .requestMatchers("/page1", "/page2").authenticated()
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
                                 .loginProcessingUrl("/login")
-                                .defaultSuccessUrl("/users")
+                                // .defaultSuccessUrl("/users")
+                                .successHandler(new CustomAuthSuccessHandler())
                                 .permitAll()
                 ).logout(
                         logout -> logout

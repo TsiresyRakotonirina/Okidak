@@ -47,7 +47,7 @@ public class AuthController {
         User existingUser = userService.findUserByEmail(userDto.getEmail());
 
         if(existingUser != null && existingUser.getEmail() != null && !existingUser.getEmail().isEmpty()){
-            result.rejectValue("email", null,
+            result.rejectValue("email", "",
                     "There is already an account registered with the same email");
         }
 
@@ -66,6 +66,12 @@ public class AuthController {
         List<UserDto> users = userService.findAllUsers();
         model.addAttribute("users", users);
         return "users";
+    }
+
+    // handler method to handle home
+    @GetMapping("/home")
+    public String hom(){
+        return "home";
     }
 
     // handler method to handle login request
