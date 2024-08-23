@@ -6,6 +6,7 @@ import com.projet.Okidak.entity.User;
 import com.projet.Okidak.repository.RoleRepository;
 import com.projet.Okidak.repository.UserRepository;
 import com.projet.Okidak.service.UserService;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,6 +48,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findUserByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+
+    @Override
+    public UserDto findUserDtoByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        UserDto userDto = mapToUserDto(user);
+        return userDto;
     }
 
     @Override

@@ -34,44 +34,38 @@
 <div class="wrapper">
 
     <header class="main-header">
-        <div th:replace="~{/fragmentsAdmin/header}"></div>
+        <div th:replace="/fragments/header"></div>
     </header>
     <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
   					
-        <div th:replace="~{/fragmentsAdmin/mainsidebar}"></div>
+        <div th:replace="/fragments/mainsidebar"></div>
     </aside>
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
-        <div layout:fragment="content">
-            <!-- Content Header (Page header) -->
-            <section class="content-header">
-                <h1>
-                    List of Registered Users
-                </h1>
-            </section>
-    
-            <section class="content">
-                    <table class="table table-bordered table-hover">
-                        <thead class="table-dark">
-                            <tr>
-                                <th>First Name</th>
-                                <th>Last Name</th>
-                                <th>Email</th>
-                                <th></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr th:each = "user : ${users}">
-                                <td th:text = "${user.firstName}"></td>
-                                <td th:text = "${user.lastName}"></td>
-                                <td th:text = "${user.email}"></td>
-                                <td><a href="">Modifier</a></td>
-                            </tr>
-                        </tbody>
-                    </table>
-            </section>
+        <!-- Content Header (Page header) -->
+        <section class="content-header" layout:fragment="header"></section>
+
+        <!-- Main content -->
+        <section class="content">
+            <div th:if="${successFlash != null}" class="alert alert-success alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <p th:text="${successFlash}"></p>
+            </div>
+
+            <div th:if="${errorFlash != null}" class="alert alert-danger alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <p th:text="${errorFlash}"></p>
+            </div>
+
+            <div th:if="${infoFlash != null}" class="alert alert-info alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <p th:text="${infoFlash}"></p>
+            </div>
+
+            <div layout:fragment="content"></div>
+        </section>
         <!-- /.content -->
     </div>
     <!-- 

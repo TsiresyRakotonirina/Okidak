@@ -1,5 +1,6 @@
 package com.projet.Okidak.controller;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.springframework.stereotype.Controller;
@@ -62,15 +63,21 @@ public class AuthController {
 
     // handler method to handle list of users
     @GetMapping("/users")
-    public String users(Model model){
+    public String users(Model model, Principal principal){
+        String emailUser = principal.getName();
+        UserDto utilisateur = userService.findUserDtoByEmail(emailUser);
         List<UserDto> users = userService.findAllUsers();
+        model.addAttribute("nameUser", utilisateur);
         model.addAttribute("users", users);
         return "users";
     }
 
     // handler method to handle home
     @GetMapping("/home")
-    public String hom(){
+    public String hom(Model model,Principal principal){
+        String emailUser = principal.getName();
+        User utilisateur = userService.findUserByEmail(emailUser);
+        model.addAttribute("nameUser", utilisateur);
         return "home";
     }
 

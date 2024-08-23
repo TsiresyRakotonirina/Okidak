@@ -23,6 +23,15 @@ CREATE TABLE users_roles (
 );
 
 
--- insertion données
-INSERT INTO roles (name) VALUES ('ROLE_ADMIN');
-INSERT INTO roles (name) VALUES ('ROLE_USER');
+CREATE TABLE annonceur(
+    id BIGSERIAL PRIMARY KEY,
+    name VARCHAR(75),
+    departement VARCHAR(150),
+    adresse VARCHAR(250)
+);
+
+
+
+CREATE TABLE campaign(
+
+);
