@@ -33,8 +33,8 @@ public class SpringSecurity{
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/index").permitAll()
-                                .requestMatchers("/users").hasRole("ADMIN")
-                                .requestMatchers("/home").hasRole("USER")
+                                .requestMatchers("/users","/add_departement","/departement/save","/add_type_campaign","/type_campaign/save").hasRole("ADMIN")
+                                .requestMatchers("/home","/add_annonceur","/annonceur/save","/add_campaign","/campaign/save","/liste_campaign").hasRole("USER")
                                 // .requestMatchers("/page1", "/page2").authenticated()
                                 .requestMatchers("/static/**", "/css/**", "/fonts/**","/js/**", "/images/**").permitAll()
                                 .requestMatchers("/layout").permitAll()

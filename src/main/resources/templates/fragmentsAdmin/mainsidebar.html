@@ -32,13 +32,7 @@
         </span>
                 </a>
             </li>
-            <li class="treeview">
-                <a th:href="'#'">
-                    <i class="fa fa-users text-green"></i>
-                    <span>Vendor</span>
-                </a>
-            </li>
-            
+
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-odnoklassniki text-blue"></i>
@@ -48,12 +42,19 @@
         </span>
                 </a>
                 <ul class="treeview-menu">
-                    <li><a th:href="'#'" ><i
-                            class="fa fa-plus"></i> Material</a></li>
-                    <li><a th:href="'#'" ><i class="fa fa-odnoklassniki"></i>
-                        Simple_Jacket</a></li>
+                    <li><a th:href="@{/add_departement}" ><i class="fa fa-plus"></i> Add Departement </a></li>
+                    <li><a th:href="@{/add_type_campaign}" ><i class="fa fa-odnoklassniki"></i>Add Type of Campaign </a></li>
                 </ul>
             </li>
+
+            <li class="treeview">
+                <a th:href="'#'">
+                    <i class="fa fa-users text-green"></i>
+                    <span>Vendor</span>
+                </a>
+            </li>
+            
+            
             <li class="treeview">
                 <a href="#">
                     <i class="fa fa-files-o text-purple"></i>
