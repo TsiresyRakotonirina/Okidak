@@ -5,18 +5,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+// import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
-
 import com.projet.Okidak.security.CustomAuthSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
-public class SpringSecurity {
+public class SpringSecurity{
 
     @Autowired
     private UserDetailsService userDetailsService;
@@ -33,9 +33,11 @@ public class SpringSecurity {
                 .authorizeHttpRequests((authorize) ->
                         authorize.requestMatchers("/register/**").permitAll()
                                 .requestMatchers("/index").permitAll()
-                                .requestMatchers("/users").hasRole("ADMIN")
-                                .requestMatchers("/home").hasRole("USER")
+                                .requestMatchers("/users","/add_departement","/departement/save","/add_type_campaign","/type_campaign/save").hasRole("ADMIN")
+                                .requestMatchers("/home","/add_annonceur","/annonceur/save","/add_campaign","/campaign/save","/liste_campaign").hasRole("USER")
                                 // .requestMatchers("/page1", "/page2").authenticated()
+                                .requestMatchers("/static/**", "/css/**", "/fonts/**","/js/**", "/images/**").permitAll()
+                                .requestMatchers("/layout").permitAll()
                 ).formLogin(
                         form -> form
                                 .loginPage("/login")
@@ -57,4 +59,12 @@ public class SpringSecurity {
                 .userDetailsService(userDetailsService)
                 .passwordEncoder(passwordEncoder());
     }
+
+// @Override
+// public void configure(WebSecurity web) throws Exception {
+//         web
+//         .ignoring()
+//         .antMatchers("/resources/**", "/static/**", "/css/**", "/js/**", "/images/**");
+// }
+
 }

@@ -1,11 +1,14 @@
 package com.projet.Okidak.service.impl;
 
 import com.projet.Okidak.dto.UserDto;
+import com.projet.Okidak.entity.Annonceur;
 import com.projet.Okidak.entity.Role;
 import com.projet.Okidak.entity.User;
+import com.projet.Okidak.repository.AnnonceurRepository;
 import com.projet.Okidak.repository.RoleRepository;
 import com.projet.Okidak.repository.UserRepository;
 import com.projet.Okidak.service.UserService;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -18,13 +21,16 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private AnnonceurRepository annonceurRepository;
     private PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
+                           AnnonceurRepository annonceurRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.annonceurRepository = annonceurRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -50,6 +56,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserDto findUserDtoByEmail(String email) {
+        User user = userRepository.findByEmail(email);
+        UserDto userDto = mapToUserDto(user);
+        return userDto;
+    }
+
+    @Override
     public List<UserDto> findAllUsers() {
         List<User> users = userRepository.findAll();
         return users.stream()
@@ -71,4 +84,24 @@ public class UserServiceImpl implements UserService {
         role.setName("ROLE_USER");
         return roleRepository.save(role);
     }
+
+
+    @Override
+    public Annonceur findAnnonceurByName(String name){
+        return annonceurRepository.findByName(name);
+    }
+
+    @Override 
+    public void saveAnnonceur(Annonceur annonceur){
+        annonceurRepository.save(annonceur);
+    }
+
+    @Override
+    public List<Annonceur> findAllAnnonceurs(){
+        return annonceurRepository.findAll();
+    }
+
+
+   
+
 }
