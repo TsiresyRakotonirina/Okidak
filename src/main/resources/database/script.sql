@@ -39,12 +39,70 @@ CREATE TABLE annonceurs(
     id_departement INT NOT NULL REFERENCES departements(id_departement)
 );
 
+CREATE TABLE campaign_video(
+    id_campaign_video BIGSERIAL PRIMARY KEY,
+    name VARCHAR(255),
+    urlVideo TEXT,
+    logo_begin VARCHAR(255) NOT NULL,
+    logo_end VARCHAR(255) NOT NULL,
+    description TEXT
+);
+
 CREATE TABLE campaigns(
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255),
-    status INT DEFAULT 0,
-    datePublication DATE,
+    name VARCHAR(255) UNIQUE,
+    status INT DEFAULT 0,       
+    date_creation TIMESTAMP,
+    date_modification TIMESTAMP,
+    date_debut TIMESTAMP,
+    date_fin TIMESTAMP,
+    budget DECIMAL,
+    vue_max BIGINT,
     id_type_campaign INT NOT NULL REFERENCES type_campaign(id_type_campaign),
+    id_campaign_video INT NOT NULL REFERENCES campaign_video(id_campaign_video),
     id_annonceur INT NOT NULL REFERENCES annonceurs(id_annonceur)
 ); 
+
+-- CREATE TABLE campaigns(
+--     id BIGSERIAL PRIMARY KEY,
+--     name VARCHAR(255),
+--     status INT DEFAULT 0,
+--     datePublication DATE,
+--     id_type_campaign INT NOT NULL REFERENCES type_campaign(id_type_campaign),
+--     id_annonceur INT NOT NULL REFERENCES annonceurs(id_annonceur)
+-- ); 
+
+-- ALTER TABLE campaigns
+--     ADD COLUMN date_modification TIMESTAMP,
+--     ADD COLUMN date_debut TIMESTAMP,
+--     ADD COLUMN date_fin TIMESTAMP,
+--     ADD COLUMN budget DECIMAL,
+--     ADD COLUMN vue_max BIGINT,
+--     ADD COLUMN id_campaign_video INT NOT NULL REFERENCES campaign_video(id_campaign_video);
+
+-- ALTER TABLE campaigns RENAME COLUMN datePublication TO date_creation;
+-- ALTER TABLE campaigns ALTER COLUMN date_creation TYPE TIMESTAMP USING date_creation::TIMESTAMP;
+
+-- ALTER TABLE campaigns ADD CONSTRAINT name_unique UNIQUE(name);
+
+
+-- CREATE TABLE campaign_video(
+--     id_campaign_video BIGSERIAL PRIMARY KEY,
+--     name VARCHAR(255),
+--     urlVideo TEXT,
+--     logo_begin BYTEA,
+--     logo_end BYTEA,
+--     description TEXT
+-- );
+-- ALTER TABLE campaign_video
+-- ALTER COLUMN logo_begin TYPE VARCHAR(255) USING logo_begin::VARCHAR(255),
+-- ALTER COLUMN logo_end TYPE VARCHAR(255) USING logo_end::VARCHAR(255);
+
+-- ALTER TABLE campaign_video
+-- ALTER COLUMN logo_begin SET NOT NULL,
+-- ALTER COLUMN logo_end SET NOT NULL;
+
+
+
+
 

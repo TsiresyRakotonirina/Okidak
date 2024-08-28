@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.projet.Okidak.dto.CampaignDto;
 import com.projet.Okidak.dto.UserDto;
 import com.projet.Okidak.entity.Annonceur;
 import com.projet.Okidak.entity.Campaign;
@@ -86,7 +87,7 @@ public class UserController {
         List<Annonceur> annonceurs = userService.findAllAnnonceurs();
         model.addAttribute("nameUser", utilisateur);
         model.addAttribute("user", userDto);
-        model.addAttribute("campaign", new Campaign());
+        model.addAttribute("campaignDto", new CampaignDto());
         model.addAttribute("campaignTypes", type);
         model.addAttribute("annonceurs", annonceurs);
         return "ajout_campaign";
@@ -94,10 +95,10 @@ public class UserController {
 
 
     @PostMapping("/campaign/save")
-        public String save_campaign(Campaign campaign, BindingResult result,Model model, Principal principal){
+        public String save_campaign(CampaignDto campaignDto, BindingResult result,Model model, Principal principal){
 
-            Campaign existingCampaign = campaignService.findCampaignByName(campaign.getName());
-
+            Campaign existingCampaign = campaignService.findCampaignByName(campaignDto.getName());
+                
             if(existingCampaign != null && existingCampaign.getName() != null && !existingCampaign.getName().isEmpty()){
                 result.rejectValue("name", "",
                         "This campaign already exists");
@@ -111,15 +112,15 @@ public class UserController {
                 List<Annonceur> annonceurs = userService.findAllAnnonceurs();
                 model.addAttribute("nameUser", utilisateur);
                 model.addAttribute("user", userDto);
-                model.addAttribute("campaign", campaign);
+                model.addAttribute("campaign", campaignDto);
                 model.addAttribute("campaignTypes", type);
                 model.addAttribute("annonceurs", annonceurs);
                 model.addAttribute("erreur", result.getAllErrors());
                 return "ajout_campaign";
             }
 
-            campaignService.saveCampaign(campaign);
-            return "redirect:/add_annonceur?success";
+            campaignService.saveCampaign(campaignDto);
+            return "redirect:/add_campaign?success";
     }
 
     @GetMapping("/liste_campaign")
