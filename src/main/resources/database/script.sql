@@ -32,6 +32,13 @@ CREATE TABLE type_campaign(
     name VARCHAR(75)
 );
 
+CREATE TABLE tarif_vue_campaign(
+    id BIGSERIAL PRIMARY KEY,
+    tarif DECIMAL,
+    vue BIGINT
+);
+
+
 CREATE TABLE annonceurs(
     id_annonceur BIGSERIAL PRIMARY KEY,
     name VARCHAR(75),
@@ -62,6 +69,23 @@ CREATE TABLE campaigns(
     id_campaign_video INT NOT NULL REFERENCES campaign_video(id_campaign_video),
     id_annonceur INT NOT NULL REFERENCES annonceurs(id_annonceur)
 ); 
+
+CREATE TABLE campaign_periode(
+    id_campaign_periode BIGSERIAL PRIMARY KEY,
+    ordre BIGINT,
+    start_date TIMESTAMP,
+    end_date TIMESTAMP,
+    budget_periode DECIMAL,
+    vue_objectif BIGINT,
+    id_campaign INT NOT NULL REFERENCES campaigns(id)
+);
+
+
+
+
+
+
+
 
 -- CREATE TABLE campaigns(
 --     id BIGSERIAL PRIMARY KEY,
