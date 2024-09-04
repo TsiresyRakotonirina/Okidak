@@ -3,7 +3,6 @@ package com.projet.Okidak.entity;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import org.hibernate.mapping.List;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.ArrayList;
@@ -67,7 +66,7 @@ public class Campaign {
     @JoinColumn( name="id_campaign_video", nullable=false )
     private Campaign_video campaign_video;
 
-    @OneToMany(mappedBy = "campaign_periode") 
+    @OneToMany(mappedBy = "campaign") 
     private List<Campaign_periode> campaign_periode = new ArrayList<>();
     
 }

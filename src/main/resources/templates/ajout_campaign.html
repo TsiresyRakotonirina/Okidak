@@ -60,6 +60,11 @@
                             Une erreur est survenue : <span th:text="${erreur}"></span>
                         </p>
                     </div>
+                    <div th:if="${param.success}">
+                        <div class="alert alert-info">
+                          Campaign Successfully Registered
+                        </div>
+                    </div>  
                     <!-- formulaire d'ajout de campaign -->
                     <form th:action="@{/campaign/save}" th:object="${campaignDto}" method="post"  enctype="multipart/form-data">
                         <h3>

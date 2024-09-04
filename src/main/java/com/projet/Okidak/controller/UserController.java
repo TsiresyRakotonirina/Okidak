@@ -8,11 +8,13 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.projet.Okidak.dto.CampaignDto;
 import com.projet.Okidak.dto.UserDto;
 import com.projet.Okidak.entity.Annonceur;
 import com.projet.Okidak.entity.Campaign;
+import com.projet.Okidak.entity.Campaign_periode;
 import com.projet.Okidak.entity.Departement;
 import com.projet.Okidak.entity.Type_campaign;
 import com.projet.Okidak.entity.User;
@@ -95,7 +97,7 @@ public class UserController {
 
 
     @PostMapping("/campaign/save")
-        public String save_campaign(CampaignDto campaignDto, BindingResult result,Model model, Principal principal){
+        public String save_campaign(CampaignDto campaignDto, BindingResult result,Model model, Principal principal) throws Exception{
 
             Campaign existingCampaign = campaignService.findCampaignByName(campaignDto.getName());
                 
@@ -133,6 +135,19 @@ public class UserController {
         model.addAttribute("user", userDto);
         model.addAttribute("campaigns", campaigns);
         return "liste_campaign";
+    }
+
+
+    @GetMapping("/liste_campaign_periode")
+    public String listcampPeriod(@RequestParam("id_campaign") Long idCampaign, Model model,Principal principal){
+        String emailUser = principal.getName();
+        User utilisateur = userService.findUserByEmail(emailUser);
+        UserDto userDto = userService.findUserDtoByEmail(emailUser);
+        List<Campaign_periode> campaign_periodes = campaignService.findAllCampaign_periodesByCampaign(idCampaign);
+        model.addAttribute("nameUser", utilisateur);
+        model.addAttribute("user", userDto);
+        model.addAttribute("campaign_periodes", campaign_periodes);
+        return "liste_campaign_periode";
     }
 
     

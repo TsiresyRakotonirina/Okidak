@@ -29,7 +29,7 @@ import com.projet.Okidak.service.CampaignService;
 import java.security.SecureRandom;
 
 // import jakarta.persistence.EntityNotFoundException;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class CampaignServiceImpl implements CampaignService{
@@ -66,15 +66,20 @@ public class CampaignServiceImpl implements CampaignService{
         return campaign_videoRepository.findByName(name);
     }
 
-    private void saveCampaign_video(Campaign_video campaign_video){
+    private void saveCampaign_video(Campaign_video campaign_video) throws Exception {
 
         Campaign_video existingCampaign_video = findCampaign_videoByName(campaign_video.getName());
 
-        if(existingCampaign_video != null && existingCampaign_video.getName() != null && !existingCampaign_video.getName().isEmpty()){
-            throw new IllegalArgumentException("A campaign video with the name '" + campaign_video.getName() + "' already exists."); 
-        }
+        try {
 
-        campaign_videoRepository.save(campaign_video);
+            if(existingCampaign_video != null && existingCampaign_video.getName() != null && !existingCampaign_video.getName().isEmpty()){
+                throw new IllegalArgumentException("A campaign video with the name '" + campaign_video.getName() + "' already exists."); 
+            }
+            campaign_videoRepository.save(campaign_video);
+
+        } catch (Exception e) {
+            throw new Exception("Erreur lors de la sauvegarde de campaign Video!",e); 
+        }
 
     }
 
@@ -120,7 +125,7 @@ public class CampaignServiceImpl implements CampaignService{
 
     // "Opérations de sauvegarde interdépendantes"
     @Transactional
-    private void saveCampaignWithVideo(Campaign campaign, Campaign_video campaign_video) {
+    private void saveCampaignWithVideo(Campaign campaign, Campaign_video campaign_video) throws Exception{
         
         saveCampaign_video(campaign_video);
         campaign.setCampaign_video(campaign_video);
@@ -131,7 +136,7 @@ public class CampaignServiceImpl implements CampaignService{
 
 
     @Override
-    public void saveCampaign(CampaignDto campaignDto){
+    public void saveCampaign(CampaignDto campaignDto) throws Exception{
 
         Campaign campaign = new Campaign();
         Campaign_video campaign_video = new Campaign_video();
@@ -224,28 +229,42 @@ public class CampaignServiceImpl implements CampaignService{
 
     }
 
-    private void saveCampaign_periode(Campaign campaign){
+    private void saveCampaign_periode(Campaign campaign) throws Exception{
         
         BigDecimal budget_periode = traitement_budget(campaign);
         Long objectif_vue_periode = objectif_vue_periode(campaign);
         List<Interval> dates_periode = getDatesPeriod(campaign);
         
-        List<Campaign_periode> campaignPeriodes = new ArrayList<>();
-        for (int periode = 0; periode < dates_periode.size(); periode++) {
-            Campaign_periode campaign_periode = new Campaign_periode();
-            campaign_periode.setOrdre((long)periode);
-            campaign_periode.setStart_date(dates_periode.get(periode).getStart());
-            campaign_periode.setEnd_date(dates_periode.get(periode).getEnd());
-            campaign_periode.setBudget_periode(budget_periode);
-            campaign_periode.setVue_objectif(objectif_vue_periode);
+        try {
+            List<Campaign_periode> campaignPeriodes = new ArrayList<>();
+            for (int periode = 0; periode < dates_periode.size(); periode++) {
+                Campaign_periode campaign_periode = new Campaign_periode();
+                campaign_periode.setOrdre((long)periode);
+                campaign_periode.setStart_date(dates_periode.get(periode).getStart());
+                campaign_periode.setEnd_date(dates_periode.get(periode).getEnd());
+                campaign_periode.setBudget_periode(budget_periode);
+                campaign_periode.setVue_objectif(objectif_vue_periode);
+                campaign_periode.setCampaign(campaign);
 
-            campaignPeriodes.add(campaign_periode);
+                campaignPeriodes.add(campaign_periode);
+            }
+
+
+            campaign_periodeRepository.saveAll(campaignPeriodes);
+
+        } catch (Exception e) {
+            throw new Exception("erreur lors de la traitement de sauvegarde de campaign periode",e);        
         }
-
-        campaign_periodeRepository.saveAll(campaignPeriodes);
 
 
     }
+
+
+    public List<Campaign_periode> findAllCampaign_periodesByCampaign(Long id_campaign){
+        return campaign_periodeRepository.findByCampaignId(id_campaign);
+    }
+
+    
 
 
 
