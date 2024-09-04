@@ -60,34 +60,107 @@
                             Une erreur est survenue : <span th:text="${erreur}"></span>
                         </p>
                     </div>
+                    <div th:if="${param.success}">
+                        <div class="alert alert-info">
+                          Campaign Successfully Registered
+                        </div>
+                    </div>  
                     <!-- formulaire d'ajout de campaign -->
-                    <form th:action="@{/campaign/save}" th:object="${campaign}" method="post">
+                    <form th:action="@{/campaign/save}" th:object="${campaignDto}" method="post"  enctype="multipart/form-data">
+                        <h3>
+                            Campaign
+                        </h3>
+                        <br>
                         <div class="mb-3">
-                            <label for="name" class="form-label">Name:</label>
+                            <label for="name" class="form-label">Name Campaign:</label>
                             <input type="text" id="name" th:field="*{name}" class="form-control"
                                 placeholder="Enter campaign name" required />
                         </div>
-
+                        <br>
                         <div class="mb-3">
-                            <label for="date_publication" class="form-label">Publication Date:</label>
-                            <input type="datetime-local" id="date_publication" th:field="*{date_publication}" class="form-control"
+                            <label for="date_creation" class="form-label">Create Date:</label>
+                            <input type="datetime-local" id="date_creation" th:field="*{date_creation}" class="form-control"
                                 required />
                         </div>
-
+                        <br>
+                        <div class="mb-3">
+                            <label for="date_modification" class="form-label">Modification Date</label>
+                            <input type="datetime-local" id="date_modification" th:field="*{date_modification}" class="form-control"
+                                required />
+                        </div>
+                        <br>
+                        <div class="mb-3">
+                            <label for="date_debut" class="form-label">Begin Date:</label>
+                            <input type="datetime-local" id="date_debut" th:field="*{date_debut}" class="form-control"
+                                required />
+                        </div>
+                        <br>
+                        <div class="mb-3">
+                            <label for="date_fin" class="form-label">End Date:</label>
+                            <input type="datetime-local" id="date_fin" th:field="*{date_fin}" class="form-control"
+                                required />
+                        </div>
+                        <br>
+                        <div class="mb-3">
+                            <label for="budget" class="form-label">Budget Campaign:</label>
+                            <input type="number" id="budget" th:field="*{budget}" class="form-control"
+                                placeholder="Enter the budget" step="0.01" min="0" required />Ariary
+                        </div>
+                        <br>
+                        <br>
+                        <div class="mb-3">
+                            <label for="vue_max" class="form-label">Maximum View:</label>
+                            <input type="number" id="vue_max" th:field="*{vue_max}" class="form-control"
+                                placeholder="Enter the max view" min="0" required />
+                        </div>
+                        <br>
                         <div class="mb-3">
                             <label for="type" class="form-label">Campaign Type:</label>
                             <select id="type" th:field="*{type}" class="form-select" required>
                                 <option th:each="type : ${campaignTypes}" th:value="${type.id_type_campaign}" th:text="${type.name}"></option>
                             </select>
                         </div>
-
+                        <br>
                         <div class="mb-3">
                             <label for="annonceur" class="form-label">Announcer:</label>
                             <select id="annonceur" th:field="*{annonceur}" class="form-select" required>
                                 <option th:each="annonceur : ${annonceurs}" th:value="${annonceur.id}" th:text="${annonceur.name}"></option>
                             </select>
                         </div>
-
+                        <br><br>
+                        <h3>
+                            Video Informations  
+                        </h3>
+                        <br>
+                        <div class="form-group">
+                            <label for="name">Video Name</label>
+                            <input type="text" class="form-control" id="name" name="name" th:field="*{name_campaign_video}" maxlength="255" required>
+                        </div>
+                        <br>
+                        <!-- URL Video -->
+                        <div class="form-group">
+                            <label for="urlVideo">URL Vidéo</label>
+                            <textarea class="form-control" id="urlVideo" name="urlVideo" th:field="*{urlVideo}" rows="3" required></textarea>
+                        </div>
+                        <br>
+                        <!-- Logo Begin -->
+                        <div class="form-group">
+                            <label for="logo_begin">Logo Begin</label>
+                            <input type="file" class="form-control-file" id="logo_begin" name="logo_begin" th:field="*{logo_begin}" accept="image/*" required>
+                        </div>
+                        <br>
+                        <!-- Logo End -->
+                        <div class="form-group">
+                            <label for="logo_end">Logo End</label>
+                            <input type="file" class="form-control-file" id="logo_end" name="logo_end" th:field="*{logo_end}" accept="image/*" required>
+                        </div>
+                        <br>
+                        <!-- Description -->
+                        <div class="form-group">
+                            <label for="description">Descriptions</label>
+                            <textarea class="form-control" id="description" name="description" th:field="*{description}" rows="5" required></textarea>
+                        </div>
+                        <br><br>
                         <div class="mt-4">
                             <button type="submit" class="btn btn-primary">Save</button>
                             <!-- <a href="#" th:href="@{/campaigns}" class="btn btn-secondary">Cancel</a> -->

@@ -82,7 +82,6 @@ public class AdminController {
             }
 
             if(result.hasErrors()){
-                // String emailUser = ((Principal) model.getAttribute("principal")).getName();
                 String emailUser = principal.getName();
                 UserDto utilisateur = userService.findUserDtoByEmail(emailUser);
                 model.addAttribute("nameUser", utilisateur);
