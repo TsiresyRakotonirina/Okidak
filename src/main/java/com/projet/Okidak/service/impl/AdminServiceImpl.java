@@ -47,6 +47,8 @@ public class AdminServiceImpl implements AdminService{
         return type_campaignRepository.findByName(name);
     }
 
+
+
     @Override
     public List<Type_campaign> findAllType_campaign(){
         return type_campaignRepository.findAll();

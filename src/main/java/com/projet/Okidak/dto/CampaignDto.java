@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.projet.Okidak.annot.EitherUrlOrFile;
 import com.projet.Okidak.entity.Annonceur;
 import com.projet.Okidak.entity.Type_campaign;
 
@@ -15,6 +16,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@EitherUrlOrFile(message = "soit file soit url")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -60,6 +62,9 @@ public class CampaignDto {
 
     @NotEmpty
     private String urlVideo;
+
+    @NotEmpty
+    private MultipartFile videoLocal;
 
     @NotEmpty
     private MultipartFile logo_begin;

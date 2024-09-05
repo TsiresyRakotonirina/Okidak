@@ -22,12 +22,15 @@ import com.projet.Okidak.service.AdminService;
 import com.projet.Okidak.service.CampaignService;
 import com.projet.Okidak.service.UserService;
 
+
+
 @Controller
 public class UserController {
 
     private UserService userService;
     private AdminService adminService;
     private CampaignService campaignService;
+
 
     public UserController(UserService userService, AdminService adminService, CampaignService campaignService) {
         this.userService = userService;
@@ -87,9 +90,12 @@ public class UserController {
         UserDto userDto = userService.findUserDtoByEmail(emailUser);
         List<Type_campaign> type = adminService.findAllType_campaign();
         List<Annonceur> annonceurs = userService.findAllAnnonceurs();
+        CampaignDto campaignDto = new CampaignDto();
+        campaignDto.setType(null);
+        campaignDto.setAnnonceur(null);
         model.addAttribute("nameUser", utilisateur);
         model.addAttribute("user", userDto);
-        model.addAttribute("campaignDto", new CampaignDto());
+        model.addAttribute("campaignDto", campaignDto);
         model.addAttribute("campaignTypes", type);
         model.addAttribute("annonceurs", annonceurs);
         return "ajout_campaign";
@@ -131,10 +137,13 @@ public class UserController {
         User utilisateur = userService.findUserByEmail(emailUser);
         UserDto userDto = userService.findUserDtoByEmail(emailUser);
         List<Campaign> campaigns = campaignService.findAllCampaigns();
+
         model.addAttribute("nameUser", utilisateur);
         model.addAttribute("user", userDto);
         model.addAttribute("campaigns", campaigns);
+
         return "liste_campaign";
+
     }
 
 

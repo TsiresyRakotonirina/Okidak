@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.List;
+    
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.Duration;
@@ -20,6 +21,7 @@ import com.projet.Okidak.dto.CampaignDto;
 import com.projet.Okidak.entity.Campaign;
 import com.projet.Okidak.entity.Campaign_periode;
 import com.projet.Okidak.entity.Campaign_video;
+import com.projet.Okidak.entity.Type_campaign;
 import com.projet.Okidak.modele.Interval;
 import com.projet.Okidak.repository.CampaignRepository;
 import com.projet.Okidak.repository.Campaign_periodeRepository;
@@ -117,7 +119,10 @@ public class CampaignServiceImpl implements CampaignService{
 
         String lien_file_base = "/uploadDir/" + newFileName;
 
+        // Copier le fichier dans le dossier du serveur de l'application.
         Files.copy(file.getInputStream(), filePath);
+
+        // System.out.println(lien_file_base);
 
         return lien_file_base;
 
@@ -149,12 +154,16 @@ public class CampaignServiceImpl implements CampaignService{
         campaign.setDate_fin(campaignDto.getDate_fin());
         campaign.setBudget(campaignDto.getBudget());
         campaign.setVue_max(campaignDto.getVue_max());
-        campaign.setType(campaignDto.getType());
+        campaign.setType(campaignDto.getType()); // ilaina amn url anle video 
         campaign.setAnnonceur(campaignDto.getAnnonceur());
         
+
+        // CAMPAIGN VIDEO 
+
         campaign_video.setName(campaignDto.getName_campaign_video());
-        campaign_video.setUrlVideo(campaignDto.getUrlVideo());
+        campaign_video.setUrlVideo(traitUrlAndVideo(campaignDto, campaign));
         campaign_video.setDescription(campaignDto.getDescription());
+
 
         try {
             String logoBeginBytes = pathFile(campaignDto.getLogo_begin(),campaign.getName());
@@ -168,6 +177,40 @@ public class CampaignServiceImpl implements CampaignService{
         saveCampaignWithVideo(campaign,campaign_video);
 
     }
+
+
+
+    private String traitUrlAndVideo(CampaignDto campaignDto, Campaign campaign){
+
+        String urlVideo = null;
+        Type_campaign type_campaign = campaignDto.getType();
+
+        System.out.println("mandalo traitement video !!!");
+
+        // System.out.println("Type de campagne : [" + type_campaign.getName() + "]" );
+        // System.out.println("video local : " + campaignDto.getVideoLocal());
+        // System.out.println("URL Video : " + campaignDto.getUrlVideo());
+
+        try {
+            if ( type_campaign.getName().equals("Youtube")) {
+                urlVideo = campaignDto.getUrlVideo();  //tonga de apidirina le url 
+            } else if (type_campaign.getName().equals("Publication")) {
+                MultipartFile video_local = campaignDto.getVideoLocal();
+                urlVideo = pathFile(video_local, campaign.getName());   
+            }
+
+            if (urlVideo == null) {
+                throw new RuntimeException("URL ou chemin du fichier vidéo est nul");
+            }
+
+            return urlVideo;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors du traitement du video (traitUrlAndVideo)");
+        }
+        
+    }
+
 
     // TRAITEMENT CAMPAIGN PERIODE BUDGET/JOUR VUE 
 
