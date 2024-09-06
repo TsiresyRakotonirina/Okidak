@@ -140,7 +140,10 @@ public class CampaignServiceImpl implements CampaignService{
         campaign.setCampaign_video(campaign_video);
         campaignRepository.save(campaign);
         saveCampaign_periode(campaign);
-        saveCampaign_carousel(campaignDto,campaign);
+        String nametype_campaign = campaign.getType().getName();
+        if (nametype_campaign.equals("Carousel")) {
+            saveCampaign_carousel(campaignDto,campaign);
+        }
 
     }
 

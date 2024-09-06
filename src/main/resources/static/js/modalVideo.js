@@ -211,7 +211,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                     }
                 });
                 
-            } else {
+            } else if (campaign_type == "Youtube"){
 
                 //  type de campaign = Youtube :
 
@@ -262,6 +262,79 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                     console.error("Le lecteur n'est pas prêt.");
                 });
 
+            } else {
+
+                // CAROUSEL 
+                console.log("mandalo carousel");
+
+
+                //////////////////////////////////////////////////////////////////////
+                
+                const carouselContainer = document.getElementById('carouselContainer');
+        
+                // Création de l'élément parent du carrousel
+                const carouselDiv = document.createElement('div');
+                carouselDiv.id = 'myCarousel';
+                carouselDiv.className = 'carousel slide';
+                carouselDiv.setAttribute('data-ride', 'carousel');
+                
+                // Création des indicateurs
+                const indicators = document.createElement('ol');
+                indicators.className = 'carousel-indicators';
+                for (let i = 0; i < 3; i++) {
+                    const li = document.createElement('li');
+                    li.setAttribute('data-target', '#myCarousel');
+                    li.setAttribute('data-slide-to', i);
+                    if (i === 0) li.className = 'active'; // Première diapositive active par défaut
+                    indicators.appendChild(li);
+                }
+
+                // Création de l'enveloppe des diapositives
+                const innerDiv = document.createElement('div');
+                innerDiv.className = 'carousel-inner';
+                
+                // Liste des descriptions des images
+                // const descriptions = ["Los Angeles", "Chicago", "New York"];
+
+                // ETO NO MAKA NY SARY CAROUSEL
+                
+                // Ajout des diapositives
+                // arakaraky ny isany le image carousel 
+                for (let i = 0; i < 3; i++) {
+                    const itemDiv = document.createElement('div');
+                    itemDiv.className = i === 0 ? 'item active' : 'item'; // La première diapositive est active
+                    
+                    const img = document.createElement('img');
+                    img.src = '#'; // Lien vide pour les images
+                    // img.alt = descriptions[i];
+                    
+                    itemDiv.appendChild(img);
+                    innerDiv.appendChild(itemDiv);
+                }
+
+                // Création des contrôles gauche et droite
+                const leftControl = document.createElement('a');
+                leftControl.className = 'left carousel-control';
+                leftControl.href = '#myCarousel';
+                leftControl.setAttribute('data-slide', 'prev');
+                leftControl.innerHTML = '<span class="glyphicon glyphicon-chevron-left"></span><span class="sr-only">Précédent</span>';
+                
+                const rightControl = document.createElement('a');
+                rightControl.className = 'right carousel-control';
+                rightControl.href = '#myCarousel';
+                rightControl.setAttribute('data-slide', 'next');
+                rightControl.innerHTML = '<span class="glyphicon glyphicon-chevron-right"></span><span class="sr-only">Suivant</span>';
+                
+                // Assemblage des éléments dans le carrousel
+                carouselDiv.appendChild(indicators);
+                carouselDiv.appendChild(innerDiv);
+                carouselDiv.appendChild(leftControl);
+                carouselDiv.appendChild(rightControl);
+                
+                // Ajout du carrousel au conteneur de la page
+                carouselContainer.appendChild(carouselDiv);
+                //////////////////////////////////////////////////////////////////////
+
             }
 
 
@@ -282,6 +355,12 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             if (videoElement) {
                 videoElement.pause();
                 videoElement.src = '';
+            }
+
+            // reinitialiser
+            var carousel = document.getElementById('myCarousel');
+            if (carousel){
+
             }
             
         });
