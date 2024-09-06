@@ -31,3 +31,14 @@
     border: none;
     display: block;
 }
+
+#player video::-webkit-media-controls {
+    display: none !important; /* For WebKit browsers (Chrome, Safari, etc.) */
+}
+
+#player video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures the video fills the container */
+    pointer-events: none; 
+}
