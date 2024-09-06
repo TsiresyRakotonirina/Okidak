@@ -19,11 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.projet.Okidak.dto.CampaignDto;
 import com.projet.Okidak.entity.Campaign;
+import com.projet.Okidak.entity.Campaign_carousel;
 import com.projet.Okidak.entity.Campaign_periode;
 import com.projet.Okidak.entity.Campaign_video;
 import com.projet.Okidak.entity.Type_campaign;
 import com.projet.Okidak.modele.Interval;
 import com.projet.Okidak.repository.CampaignRepository;
+import com.projet.Okidak.repository.Campaign_carouselRepository;
 import com.projet.Okidak.repository.Campaign_periodeRepository;
 import com.projet.Okidak.repository.Campaign_videoRepository;
 import com.projet.Okidak.service.CampaignService;
@@ -39,11 +41,13 @@ public class CampaignServiceImpl implements CampaignService{
     private CampaignRepository campaignRepository;
     private Campaign_videoRepository campaign_videoRepository;
     private Campaign_periodeRepository campaign_periodeRepository; 
+    private Campaign_carouselRepository campaign_carouselRepository;
 
-    public CampaignServiceImpl(CampaignRepository campaignRepository, Campaign_videoRepository campaign_videoRepository, Campaign_periodeRepository campaign_periodeRepository){
+    public CampaignServiceImpl(CampaignRepository campaignRepository, Campaign_videoRepository campaign_videoRepository, Campaign_periodeRepository campaign_periodeRepository, Campaign_carouselRepository campaign_carouselRepository){
         this.campaignRepository = campaignRepository;
         this.campaign_videoRepository = campaign_videoRepository;
         this.campaign_periodeRepository = campaign_periodeRepository;
+        this.campaign_carouselRepository = campaign_carouselRepository;
     }
 
     @Override 
@@ -130,12 +134,13 @@ public class CampaignServiceImpl implements CampaignService{
 
     // "Opérations de sauvegarde interdépendantes"
     @Transactional
-    private void saveCampaignWithVideo(Campaign campaign, Campaign_video campaign_video) throws Exception{
+    private void saveCampaignWithVideo(Campaign campaign, Campaign_video campaign_video, CampaignDto campaignDto) throws Exception{
         
         saveCampaign_video(campaign_video);
         campaign.setCampaign_video(campaign_video);
         campaignRepository.save(campaign);
         saveCampaign_periode(campaign);
+        saveCampaign_carousel(campaignDto,campaign);
 
     }
 
@@ -174,7 +179,7 @@ public class CampaignServiceImpl implements CampaignService{
             throw new RuntimeException("Erreur lors du traitement des fichiers logo", e);
         }
 
-        saveCampaignWithVideo(campaign,campaign_video);
+        saveCampaignWithVideo(campaign,campaign_video,campaignDto);
 
     }
 
@@ -197,7 +202,10 @@ public class CampaignServiceImpl implements CampaignService{
             } else if (type_campaign.getName().equals("Publication")) {
                 MultipartFile video_local = campaignDto.getVideoLocal();
                 urlVideo = pathFile(video_local, campaign.getName());   
+            } else if (type_campaign.getName().equals("Carousel")) {
+                urlVideo = "carousel"; 
             }
+
 
             if (urlVideo == null) {
                 throw new RuntimeException("URL ou chemin du fichier vidéo est nul");
@@ -302,10 +310,27 @@ public class CampaignServiceImpl implements CampaignService{
 
     }
 
+    private void saveCampaign_carousel(CampaignDto campaignDto, Campaign campaign) throws Exception{
+        List<Campaign_carousel> campaign_carousels = new ArrayList<>();
+        MultipartFile[] img_carousel = campaignDto.getImg_carousel();
+
+        for (MultipartFile multipartFile : img_carousel) {
+            Campaign_carousel campaign_carousel = new Campaign_carousel();
+            String pathImg = pathFile(multipartFile, campaign.getName());
+            campaign_carousel.setUrlImage(pathImg);
+            campaign_carousel.setCampaign(campaign);
+            campaign_carousels.add(campaign_carousel);
+        }
+
+        campaign_carouselRepository.saveAll(campaign_carousels);
+
+
+    }
 
     public List<Campaign_periode> findAllCampaign_periodesByCampaign(Long id_campaign){
         return campaign_periodeRepository.findByCampaignId(id_campaign);
     }
+
 
     
 

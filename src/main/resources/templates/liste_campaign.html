@@ -77,9 +77,9 @@
                             <span class="info-box-text col-md-2" style="text-transform: none;" > <a th:href="@{/liste_campaign_periode(id_campaign=${campaign.id})}" class="btn btn-primary">Voir les periodes</a> </span>
                             
                             <span class="info-box-text col-md-2" style="text-transform: none;" > 
-                                <button type="button" class="btn btn-primary" th:data-type_campaign="${campaign.type.name}" th:data-url_video="${campaign.campaign_video.urlVideo}"  data-toggle="modal" data-target="#exampleModalCenter">
+                                <button type="button" class="btn btn-primary" th:data-type_campaign="${campaign.type.name}" th:data-url_video="${campaign.campaign_video.urlVideo}" th:data-img_carousel="${campaign.campaign_carousel}" data-toggle="modal" data-target="#exampleModalCenter">
                                     Launch demo modal
-                                  </button>
+                                </button>
                             </span>
                             <span class="info-box-text col-md-2" style="text-transform: none;" > 
                                 <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#ModalCenter">

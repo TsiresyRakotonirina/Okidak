@@ -13,7 +13,7 @@ import com.projet.Okidak.config.UrlOrFileValidator;
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EitherUrlOrFile {
-    String message() default "You must provide either a URL or a file, but not both.";
+    String message() default "Vous devez fournir soit une URL, soit un/des fichiers";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

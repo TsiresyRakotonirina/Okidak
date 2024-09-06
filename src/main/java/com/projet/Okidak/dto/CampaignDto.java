@@ -60,11 +60,16 @@ public class CampaignDto {
     @NotEmpty
     private String name_campaign_video;
 
+    // na ty 
     @NotEmpty
     private String urlVideo;
 
+    // na ty
     @NotEmpty
     private MultipartFile videoLocal;
+
+    // na ty 
+    private MultipartFile[] img_carousel;
 
     @NotEmpty
     private MultipartFile logo_begin;

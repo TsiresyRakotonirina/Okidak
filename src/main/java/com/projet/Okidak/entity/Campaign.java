@@ -68,5 +68,8 @@ public class Campaign {
 
     @OneToMany(mappedBy = "campaign") 
     private List<Campaign_periode> campaign_periode = new ArrayList<>();
+
+    @OneToMany(mappedBy = "campaign")
+    private List<Campaign_carousel> campaign_carousel = new ArrayList<>();
     
 }

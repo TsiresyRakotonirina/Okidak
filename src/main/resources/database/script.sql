@@ -66,9 +66,11 @@ CREATE TABLE campaigns(
     budget DECIMAL,
     vue_max BIGINT,
     id_type_campaign INT NOT NULL REFERENCES type_campaign(id_type_campaign),
-    id_campaign_video INT NOT NULL REFERENCES campaign_video(id_campaign_video),
-    id_annonceur INT NOT NULL REFERENCES annonceurs(id_annonceur)
+    id_campaign_video BIGINT NOT NULL REFERENCES campaign_video(id_campaign_video),
+    id_annonceur BIGINT NOT NULL REFERENCES annonceurs(id_annonceur)
 ); 
+
+
 
 CREATE TABLE campaign_periode(
     id_campaign_periode BIGSERIAL PRIMARY KEY,
@@ -77,7 +79,15 @@ CREATE TABLE campaign_periode(
     end_date TIMESTAMP,
     budget_periode DECIMAL,
     vue_objectif BIGINT,
-    id_campaign INT NOT NULL REFERENCES campaigns(id)
+    id_campaign BIGINT NOT NULL REFERENCES campaigns(id)
+);
+
+
+
+CREATE TABLE campaign_carousel(
+    id_campaign_carousel BIGSERIAL PRIMARY KEY,
+    urlImage TEXT,
+    id_campaign BIGINT NOT NULL REFERENCES campaigns(id)
 );
 
 

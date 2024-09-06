@@ -220,7 +220,7 @@
                     var selectedOption = selectElement.options[selectElement.selectedIndex]; // recupere l'option selectionner 
                     var selectedType = selectedOption.text; // Récupère le texte sélectionnée
 
-                    // console.log('Selected type:', selectedType);
+                    console.log('Selected type:[' + selectedType + "]" );
 
 
                     dynamicField.innerHTML = ''; // Vider le contenu actuel
@@ -229,7 +229,7 @@
                         // Insérer le champ URL Vidéo
                         dynamicField.innerHTML = `
                             <div class="form-group">
-                                <label for="urlVideo">URL Vidéo</label>
+                                <label for="urlVideo">URL Vidéo Youtube</label>
                                 <textarea class="form-control" id="urlVideo" name="urlVideo" th:field="*{urlVideo}" rows="3" required></textarea>
                             </div>
                         `;
@@ -241,7 +241,17 @@
                                 <input type="file" id="videoLocal" name="videoLocal"  th:field="*{videoLocal}" accept="video/*"  required/>
                             </div>
                         `;
+                    } else if(selectedType === 'Carousel') {
+                        // Insérer le champ multiple Fichier
+                        console.log("miditra")
+                        dynamicField.innerHTML = `
+                            <div class="form-group">
+                            <label for="img_carousel">Sélectionner les fichiers images pour la carousel</label>
+                            <input type="file" id="img_carousel" name="img_carousel[]"  th:field="*{img_carousel}" accept="image/*" multiple required/>
+                            </div>
+                        `;
                     }
+
                 });
                 
             });
