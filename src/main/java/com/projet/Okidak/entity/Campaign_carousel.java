@@ -1,5 +1,7 @@
 package com.projet.Okidak.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -22,6 +24,7 @@ public class Campaign_carousel {
     private String urlImage;
 
     @ManyToOne @JoinColumn(name = "id_campaign", nullable = false)
+    @JsonBackReference
     private Campaign campaign;
 
 }

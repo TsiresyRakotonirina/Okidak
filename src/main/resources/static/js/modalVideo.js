@@ -262,17 +262,23 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                     console.error("Le lecteur n'est pas prêt.");
                 });
 
+
+
             } else {
 
                 // CAROUSEL 
                 console.log("mandalo carousel");
-
-
-                //////////////////////////////////////////////////////////////////////
+              
+                // ETO NO MAKA NY SARY CAROUSEL
+                var carouselImages = button.data('carousel_images'); 
                 
-                const carouselContainer = document.getElementById('carouselContainer');
-        
-                // Création de l'élément parent du carrousel
+                // Trouver le conteneur pour le carrousel dans la modal
+                const carouselContainer = document.getElementById('player');
+                
+                // Nettoyer le conteneur
+                carouselContainer.innerHTML = '';
+                
+                // Créer le carrousel et ajouter les images
                 const carouselDiv = document.createElement('div');
                 carouselDiv.id = 'myCarousel';
                 carouselDiv.className = 'carousel slide';
@@ -281,36 +287,34 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 // Création des indicateurs
                 const indicators = document.createElement('ol');
                 indicators.className = 'carousel-indicators';
-                for (let i = 0; i < 3; i++) {
+                carouselImages.forEach((_, index) => {
                     const li = document.createElement('li');
                     li.setAttribute('data-target', '#myCarousel');
-                    li.setAttribute('data-slide-to', i);
-                    if (i === 0) li.className = 'active'; // Première diapositive active par défaut
+                    li.setAttribute('data-slide-to', index);
+                    if (index === 0) li.className = 'active'; // Première diapositive active par défaut
                     indicators.appendChild(li);
-                }
+                });
 
                 // Création de l'enveloppe des diapositives
                 const innerDiv = document.createElement('div');
                 innerDiv.className = 'carousel-inner';
                 
-                // Liste des descriptions des images
-                // const descriptions = ["Los Angeles", "Chicago", "New York"];
-
-                // ETO NO MAKA NY SARY CAROUSEL
-                
                 // Ajout des diapositives
-                // arakaraky ny isany le image carousel 
-                for (let i = 0; i < 3; i++) {
+                // ETO NO MAPIDITRA NY SARY CAROUSEL
+
+                console.log(carouselImages);
+
+                carouselImages.forEach((image, index) => {
                     const itemDiv = document.createElement('div');
-                    itemDiv.className = i === 0 ? 'item active' : 'item'; // La première diapositive est active
+                    itemDiv.className = index === 0 ? 'item active' : 'item';
                     
                     const img = document.createElement('img');
-                    img.src = '#'; // Lien vide pour les images
-                    // img.alt = descriptions[i];
+                    img.src = image.urlImage;
+                    img.className = 'd-block w-100';
                     
                     itemDiv.appendChild(img);
                     innerDiv.appendChild(itemDiv);
-                }
+                });
 
                 // Création des contrôles gauche et droite
                 const leftControl = document.createElement('a');
@@ -331,9 +335,22 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 carouselDiv.appendChild(leftControl);
                 carouselDiv.appendChild(rightControl);
                 
+                
                 // Ajout du carrousel au conteneur de la page
                 carouselContainer.appendChild(carouselDiv);
-                //////////////////////////////////////////////////////////////////////
+
+               // Activer le carrousel Bootstrap après l'ajout
+                $('#myCarousel').carousel({
+                    interval: 3000, // Diapositive toutes les 3 secondes
+                    ride: 'carousel',
+                    pause: false
+                });
+
+                
+                // Forcer le démarrage du cycle
+                $('#myCarousel').carousel('cycle');
+                
+                console.log("Carousel initialized");
 
             }
 
@@ -363,4 +380,29 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
             }
             
+        });
+
+
+        $('#ModalCenter').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Le bouton qui a déclenché la modal
+
+            var imgCarouselData = button.data('carousel_images'); // Récupère les données des images du carousel
+
+    
+            // Vérifiez si les données existent et ne sont pas vides ou "undefined"
+            if (imgCarouselData && imgCarouselData !== "undefined" && imgCarouselData !== "") {
+                // Pas besoin de parser si c'est déjà un objet
+                const imgCarousel = imgCarouselData;
+
+                if (imgCarousel.length === 0) {
+                    console.log('Aucune image disponible pour ce carousel.');
+                    // Gérer l'absence d'images, par exemple afficher un message ou cacher le carousel
+                } else {
+                    console.log('Images du carousel:', imgCarousel);
+                    // Afficher le carousel normalement
+                }
+            } else {
+                console.log('Pas de données d\'images du carousel disponibles.');
+                // Gérer l'absence de données, par exemple afficher un message ou cacher le carousel
+            }
         });
