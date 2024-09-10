@@ -41,6 +41,22 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
         return null;
     }
+
+
+    function consoleView(value) {
+        if (value === 25) {
+            console.log("25%");
+        } else if (value === 50) {
+            console.log("50%");
+        } else if (value === 75) {
+            console.log("75%");
+        } else if (value === 100) {
+            console.log("100%");
+        } else {
+            console.log("tsy niditra");
+            console.log("value =" + value);
+        }
+    }
        
 
         // Fonction appelée par l'API YouTube lorsqu'elle est prête
@@ -98,6 +114,9 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
             // Mettre à jour la barre de progression
             document.getElementById('progress-bar').value = (currentTime / duration) * 100;
+            var value = (currentTime / duration) * 100;
+            consoleView(value,duration);
+
 
             if (player.getPlayerState() === YT.PlayerState.PLAYING) {
                 setTimeout(updateTime, 1000);
@@ -187,6 +206,8 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 // Mettre à jour la barre de progression lorsque la vidéo se joue
                 video.addEventListener('timeupdate', function() {
                     var value = (100 / video.duration) * video.currentTime;
+                    var duration = video.duration;
+                    consoleView(value,duration)
                     progressBar.value = value;
                 });
 
@@ -274,6 +295,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 
                 // Trouver le conteneur pour le carrousel dans la modal
                 const carouselContainer = document.getElementById('player');
+                const footerModal = document.getElementById('modal-footer');
                 
                 // Nettoyer le conteneur
                 carouselContainer.innerHTML = '';
@@ -332,6 +354,8 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 // Assemblage des éléments dans le carrousel
                 carouselDiv.appendChild(indicators);
                 carouselDiv.appendChild(innerDiv);
+
+
                 carouselDiv.appendChild(leftControl);
                 carouselDiv.appendChild(rightControl);
                 
@@ -382,27 +406,3 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             
         });
 
-
-        $('#ModalCenter').on('show.bs.modal', function (event) {
-            var button = $(event.relatedTarget); // Le bouton qui a déclenché la modal
-
-            var imgCarouselData = button.data('carousel_images'); // Récupère les données des images du carousel
-
-    
-            // Vérifiez si les données existent et ne sont pas vides ou "undefined"
-            if (imgCarouselData && imgCarouselData !== "undefined" && imgCarouselData !== "") {
-                // Pas besoin de parser si c'est déjà un objet
-                const imgCarousel = imgCarouselData;
-
-                if (imgCarousel.length === 0) {
-                    console.log('Aucune image disponible pour ce carousel.');
-                    // Gérer l'absence d'images, par exemple afficher un message ou cacher le carousel
-                } else {
-                    console.log('Images du carousel:', imgCarousel);
-                    // Afficher le carousel normalement
-                }
-            } else {
-                console.log('Pas de données d\'images du carousel disponibles.');
-                // Gérer l'absence de données, par exemple afficher un message ou cacher le carousel
-            }
-        });

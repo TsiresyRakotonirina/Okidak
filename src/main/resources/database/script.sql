@@ -91,6 +91,16 @@ CREATE TABLE campaign_carousel(
 );
 
 
+CREATE TABLE statistic(
+    id_stat BIGSERIAL PRIMARY KEY,
+    id_campaign BIGINT NOT NULL REFERENCES campaigns(id),
+    id_campaign_video BIGINT NOT NULL REFERENCES campaign_video(id_campaign_video),
+    nb_impression BIGINT,
+    nb_lancement BIGINT,
+    nb_vue BIGINT,
+    nb_skip_video BIGINT
+);
+
 
 
 
