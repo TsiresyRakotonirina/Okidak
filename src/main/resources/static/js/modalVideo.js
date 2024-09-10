@@ -42,21 +42,33 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
         return null;
     }
 
+        // reference pour le lecteur video 
+        let youtubeMilestones = {
+            "25%": false,
+            "50%": false,
+            "75%": false,
+            "100%": false
+        };
 
-    function consoleView(value) {
-        if (value === 25) {
-            console.log("25%");
-        } else if (value === 50) {
-            console.log("50%");
-        } else if (value === 75) {
-            console.log("75%");
-        } else if (value === 100) {
-            console.log("100%");
-        } else {
-            console.log("tsy niditra");
-            console.log("value =" + value);
+        function checkVideoMilestones(currentTime, duration, milestones) {
+            // Vérifier les étapes de progression
+            if (!milestones["25%"] && currentTime >= duration * 0.25) {
+                console.log("La vidéo est à 25%");
+                milestones["25%"] = true;
+            }
+            if (!milestones["50%"] && currentTime >= duration * 0.50) {
+                console.log("La vidéo est à 50%");
+                milestones["50%"] = true;
+            }
+            if (!milestones["75%"] && currentTime >= duration * 0.75) {
+                console.log("La vidéo est à 75%");
+                milestones["75%"] = true;
+            }
+            if (!milestones["100%"] && currentTime >= duration) {
+                console.log("La vidéo est à 100%");
+                milestones["100%"] = true;
+            }
         }
-    }
        
 
         // Fonction appelée par l'API YouTube lorsqu'elle est prête
@@ -105,6 +117,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             }
         }
 
+        
 
         function updateTime() {
             const currentTime = player.getCurrentTime();
@@ -114,8 +127,9 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
             // Mettre à jour la barre de progression
             document.getElementById('progress-bar').value = (currentTime / duration) * 100;
-            var value = (currentTime / duration) * 100;
-            consoleView(value,duration);
+
+
+            checkVideoMilestones(currentTime, duration, youtubeMilestones);
 
 
             if (player.getPlayerState() === YT.PlayerState.PLAYING) {
@@ -199,6 +213,14 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
                 // CONTROLLE VIDEO 
 
+                // references lecture video 
+                let localMilestones = {
+                    "25%": false,
+                    "50%": false,
+                    "75%": false,
+                    "100%": false
+                };
+
                 // Récupérer l'élément vidéo et la barre de progression
                 var video = document.getElementById('video');
                 var progressBar = document.getElementById('progress-bar');
@@ -206,9 +228,12 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 // Mettre à jour la barre de progression lorsque la vidéo se joue
                 video.addEventListener('timeupdate', function() {
                     var value = (100 / video.duration) * video.currentTime;
-                    var duration = video.duration;
-                    consoleView(value,duration)
                     progressBar.value = value;
+                   
+                    var currentTime = video.currentTime;
+                    var duration = video.duration; 
+                    checkVideoMilestones(currentTime, duration, localMilestones);
+                
                 });
 
 
@@ -236,10 +261,12 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
                 //  type de campaign = Youtube :
 
+
                 var video_Id = extractVideoId(videoUrl);
 
                 console.log(player);
                 console.log("mandalo else");
+
 
 
                 // if (!player) {
@@ -381,6 +408,16 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
         });
 
+
+        function resetMilestones() {
+            youtubeMilestones = {
+                "25%": false,
+                "50%": false,
+                "75%": false,
+                "100%": false
+            };
+        }
+
         // Écouteur pour l'événement de fermeture de la modal
         $('#exampleModalCenter').on('hidden.bs.modal', function () {
            // Arrêter la vidéo YouTube si le lecteur existe
@@ -388,6 +425,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 player.stopVideo(); 
                 player.destroy(); // Détruire le lecteur YouTube
                 player = undefined; // Réinitialiser la variable player
+                resetMilestones();
             }
 
             // Arrêter la vidéo HTML5 si elle existe
