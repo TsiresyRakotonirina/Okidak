@@ -24,11 +24,10 @@
     <link rel="stylesheet" href="/css/morris.css">
     <!-- bootstrap wysihtml5 - text editor -->
     <link rel="stylesheet" href="/css/bootstrap3-wysihtml5.min.css">
-    <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-        <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
-        <![endif]-->
+
+    <!-- css hipetrahanle video  -->
+    <link rel="stylesheet" href="/css/modal.css">
+
 
 <body>
 
@@ -75,85 +74,60 @@
                             <span class="info-box-text col-md-2" style="text-transform: none;" th:text="${campaign.name}"></span>
                             <span class="info-box-number col-md-2" th:text="${campaign.status}"></span>
                             <span class="info-box-text col-md-2" style="text-transform: none;" th:text="${#temporals.format(campaign.date_debut, 'dd/MM/yyyy HH:mm')} + ' - ' + ${#temporals.format(campaign.date_fin, 'dd/MM/yyyy HH:mm')}"></span>
-                            <span class="info-box-text col-md-2" style="text-transform: none;" > <a th:href="@{/liste_campaign_periode(id_campaign=${campaign.id})}" class="btn btn-primary">Voir les periodes</a> </span>
-                            <span class="info-box-text col-md-2" style="text-transform: none;" > 
-                                <button class="btn btn-primary" onclick="openDialog(this)" 
-                                    th:data-name="${campaign.name}"
-                                    th:data-url_video="${campaign.campaign_video.urlVideo}" 
-                                    >
-                                    Afficher la fenêtre
-                                </button> 
-                            </span>
-                            <span class="info-box-text col-md-2" style="text-transform: none;" > 
-                                <button type="button" class="btn btn-primary" th:data-url_video="${campaign.campaign_video.urlVideo}" data-toggle="modal" data-target="#exampleModalCenter">
-                                    Launch demo modal
-                                  </button>
+                            <span class="info-box-text col-md-3" style="text-transform: none;" > <a th:href="@{/liste_campaign_periode(id_campaign=${campaign.id})}" class="btn btn-primary">Voir les periodes</a> </span>
+                            
+                            <span class="info-box-text col-md-3" style="text-transform: none;" > 
+                                <button type="button" class="btn btn-primary" 
+                                        th:data-type_campaign="${campaign.type.name}" 
+                                        th:data-url_video="${campaign.campaign_video.urlVideo}"
+                                        th:data-logo_begin="${campaign.campaign_video.logo_begin}"
+                                        th:data-logo_end="${campaign.campaign_video.logo_end}"
+                                        th:data-carousel_images="${campaign.carouselJson}"
+
+                                        
+                                        data-toggle="modal" data-target="#exampleModalCenter">
+                                    Video / Carousel
+                                </button>
                             </span>
                         </div>
                     </div>
-                </div>
-
-                <dialog id="myDialog">
-                    <h2 id="dialogName"></h2>
-                    <iframe width="560" height="315"
-                            id="dialogIframe"
-                            frameborder="0"
-                            allowfullscreen>
-                    </iframe>
-                    <button id="closeDialog" onclick="closeDialog()">Fermer</button>
-                </dialog>
+                </div>  
 
                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
                     <div class="modal-dialog" role="document">
-                        <div class="modal-content" style="width: 640px;">
+                        <div class="modal-content">
                             <div class="modal-header">
                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                                 <h4 class="modal-title" id="exampleModalCenterTitle">Video Modal</h4>
                             </div>
-                            <div class="modal-body" style="position: relative;
-                                                           height: 360px;
-                                                           overflow: hidden;">
+                            <div class="modal-body">
                                 
                                 <!-- Élément transparent couvrant l'iframe -->
-                                <div id="cover" style="position: absolute;
-                                                       top: 0;
-                                                       left: 0;
-                                                       width: 100%;
-                                                       height: 100%;
-                                                       z-index: 10;
-                                                       background: transparent;
-                                                       cursor: default;">
-                                </div>
+                                <div id="cover"></div>
                                 <!-- Conteneur de l'iframe -->
-                                <div id="player-container" style="position: relative;
-                                                                  width: 100%;
-                                                                  height: 100%;">
-
-                                    <div id="player" style="width: 100%;
-                                                            height: 100%;
-                                                            border: none;
-                                                            display: block;">
+                                <div id="player-container">
+                                    <div id="player">
+                                        <!-- <div id="start-logo" style="display: none; cursor: pointer;">
+                                            <img alt="Logo début" />
+                                        </div>
+                                        <div id="end-logo" style="display: none; cursor: pointer;">
+                                            <img alt="Logo fin" />
+                                        </div> -->
                                     </div>
-
                                 </div>
-                                
                                 
                             </div>
-                            <div class="modal-footer">
+                            <div class="modal-footer" id="modal-footer">
                                 <input type="range" id="progress-bar" value="0" min="0" max="100">
                                 <span id="current-time">00:00</span> / <span id="duration">00:00</span>
-                                <button id="playButton" class="btn btn-primary"></button> <!-- Custom play button -->
+                                <button id="playButton" class="btn btn-primary"></button> 
                                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-
-            
-                
 
             </section>
         <!-- /.content -->
@@ -198,228 +172,11 @@
 
     <!-- <script src="https://www.youtube.com/iframe_api"></script> -->
 
+    <!-- script pour les videos youtubes -->
+    <script src="/js/modalVideo.js"></script>
 
-
-    <script>
-
-        function openDialog(button) {
-            var dialog = document.getElementById('myDialog');
-            var name = button.getAttribute('data-name');
-            var url_video = button.getAttribute('data-url_video');
-
-            var videoId = extractVideoId(url_video);
-    
-            document.getElementById('dialogName').innerText = name;
-            document.getElementById('dialogIframe').src = 'https://www.youtube.com/embed/' + videoId;
-    
-            dialog.showModal();
-
-        }
 
     
-        function closeDialog() {
-            var dialog = document.getElementById('myDialog');
-            var iframe = document.getElementById('dialogIframe');
-            iframe.src = ''; 
-            dialog.close();
-        }
-
-        function extractVideoId(url) {
-            if (url != null) {
-                var start = "https://youtu.be/";
-                var starts = "https://www.youtube.com/embed/";
-
-                if (url.startsWith("https://youtu.be/")) {
-                    return url.substring(start.length);
-                }
-
-                if (url.startsWith("https://www.youtube.com/watch?v=")) {
-                    var videoId = url.split('v=')[1];
-                    if (videoId.indexOf('&') !== -1) {
-                        videoId = videoId.split('&')[0];
-                    }
-                    return videoId;
-                }
-
-                if (url.startsWith("https://www.youtube.com/embed/")) {
-                    return url.substring(starts.length);
-                }
-            }
-
-            return null;
-        }
-
-
-
-// -------------------------------
-
-
-        // Charger l'API YouTube uniquement si elle n'est pas déjà chargée
-        if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
-            var tag = document.createElement('script');
-            tag.src = "https://www.youtube.com/iframe_api";
-            tag.onload = function() {
-                console.log("Script API YouTube chargé.");
-            };
-            tag.onerror = function() {
-                console.error("Erreur lors du chargement du script API YouTube.");
-            };
-            var firstScriptTag = document.getElementsByTagName('script')[0];
-            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-        } else {
-            onYouTubeIframeAPIReady();
-        }
-
-
-            // Variable globale pour le lecteur
-                var player;
-                var playerReadyDeferred = $.Deferred();
-
-                // Fonction appelée par l'API YouTube lorsqu'elle est prête
-                function onYouTubeIframeAPIReady() {
-                    console.log("API YouTube est prête");
-                }
-
-                // Écouteur pour l'événement d'ouverture de la modal
-                $('#exampleModalCenter').on('show.bs.modal', function (event) {
-                    var button = $(event.relatedTarget);
-                    var videoUrl = button.data('url_video'); 
-                    var video_Id = extractVideoId(videoUrl);
-
-                    console.log(player);
-
-                    if (!player) {
-                        player = new YT.Player('player', {
-                            height: '100%',
-                            width: '100%',  
-                            videoId: video_Id, 
-                            playerVars: {
-                                'controls': 0, // Désactive la barre de contrôle (lecture, pause, etc.)
-                                'disablekb': 1, // Désactive les raccourcis clavier
-                                'modestbranding': 1, // Réduit l'image de marque YouTube
-                                'rel': 0, // Ne montre pas les vidéos suggérées à la fin
-                                'showinfo': 0, // Masque les informations sur la vidéo (titre, uploader)
-                                'fs': 0, // Désactive le bouton plein écran
-                                'iv_load_policy': 3, // Désactive les annotations
-                                'autohide': 1, // Masque les commandes après la lecture de la vidéo
-                                'playsinline': 1, // Joue la vidéo en ligne au lieu de plein écran sur mobile
-                                'enablejsapi': 1 // Active l'API JavaScript
-                            },
-                            events: {
-                                'onReady': onPlayerReady,
-                                'onError': function(event) {
-                                    console.error("Erreur dans le lecteur:", event.data);
-                                },
-                                'onStateChange': onPlayerStateChange
-                            }
-                        });
-                    } else {
-                        player.loadVideoById(video_Id); // Change la vidéo et commence la lecture
-                    }
-
-                    console.log(player);
-
-                    playerReadyDeferred.done(function() {
-                        if (player && typeof player.cueVideoById === 'function') {
-                            player.cueVideoById(video_Id);
-                            console.log("Vidéo chargée avec ID:", video_Id);
-                        } else {
-                            console.error('La méthode cueVideoById n\'est pas disponible.');
-                        }
-                    }).fail(function() {
-                        console.error("Le lecteur n'est pas prêt.");
-                    });
-                });
-
-                // Fonction appelée lorsque le lecteur est prêt
-                function onPlayerReady(event) {
-                    var playButton = $('#playButton');
-                    console.log("Le lecteur est prêt");
-
-                    document.getElementById('progress-bar').addEventListener('input', seekVideo);
-
-                    updatePlayButtonText();
-                    updateDuration();
-
-                    playButton.on('click', function() {
-                        if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
-                            player.pauseVideo(); 
-                        } else if (player) {
-                            player.playVideo(); 
-                        }
-
-                        updatePlayButtonText();
-                    });
-
-                    player.addEventListener('onStateChange', function(event) {
-                        updatePlayButtonText();
-                    });
-
-                    function updatePlayButtonText() {
-                        if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
-                            playButton.text('Pause Video'); 
-                        } else {
-                            playButton.text('Play Video'); 
-                        }
-                    }
-                }
-
-                function onPlayerStateChange(event) {
-                    if (event.data === YT.PlayerState.PLAYING) {
-                        updateTime();
-                    }
-                }
-
-
-                function updateTime() {
-                    const currentTime = player.getCurrentTime();
-                    const duration = player.getDuration();
-                    document.getElementById('current-time').textContent = formatTime(currentTime);
-                    document.getElementById('duration').textContent = formatTime(duration);
-
-                    // Mettre à jour la barre de progression
-                    document.getElementById('progress-bar').value = (currentTime / duration) * 100;
-
-                    if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-                        setTimeout(updateTime, 1000);
-                    }
-                }
-
-
-                function seekVideo(event) {
-                    const value = event.target.value;
-                    const duration = player.getDuration();
-                    player.seekTo(duration * (value / 100));
-                }
-
-
-                function updateDuration() {
-                    const duration = player.getDuration();
-                    document.getElementById('duration').textContent = formatTime(duration);
-                }
-
-
-                function formatTime(seconds) {
-                    const minutes = Math.floor(seconds / 60);
-                    const secs = Math.floor(seconds % 60);
-                    return `${pad(minutes)}:${pad(secs)}`;
-                }
-
-                function pad(number) {
-                    return number < 10 ? '0' + number : number;
-                }
-
-
-                // Écouteur pour l'événement de fermeture de la modal
-                $('#exampleModalCenter').on('hidden.bs.modal', function () {
-                    if (player && typeof player.stopVideo === 'function') {
-                        player.stopVideo(); 
-                    }
-                });
-
-
-    </script>
-
 
 </body>
 </html>

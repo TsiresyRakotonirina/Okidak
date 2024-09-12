@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.List;
+    
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.Duration;
@@ -17,13 +18,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.projet.Okidak.dto.CampaignDto;
+// import com.projet.Okidak.dto.StatDto;
 import com.projet.Okidak.entity.Campaign;
+import com.projet.Okidak.entity.Campaign_carousel;
 import com.projet.Okidak.entity.Campaign_periode;
 import com.projet.Okidak.entity.Campaign_video;
+import com.projet.Okidak.entity.Transaction;
+import com.projet.Okidak.entity.Type_campaign;
 import com.projet.Okidak.modele.Interval;
 import com.projet.Okidak.repository.CampaignRepository;
+import com.projet.Okidak.repository.Campaign_carouselRepository;
 import com.projet.Okidak.repository.Campaign_periodeRepository;
 import com.projet.Okidak.repository.Campaign_videoRepository;
+import com.projet.Okidak.repository.TransactionRepository;
 import com.projet.Okidak.service.CampaignService;
 
 import java.security.SecureRandom;
@@ -37,11 +44,19 @@ public class CampaignServiceImpl implements CampaignService{
     private CampaignRepository campaignRepository;
     private Campaign_videoRepository campaign_videoRepository;
     private Campaign_periodeRepository campaign_periodeRepository; 
+    private Campaign_carouselRepository campaign_carouselRepository;
+    private TransactionRepository transactionRepository;
 
-    public CampaignServiceImpl(CampaignRepository campaignRepository, Campaign_videoRepository campaign_videoRepository, Campaign_periodeRepository campaign_periodeRepository){
+    public CampaignServiceImpl(CampaignRepository campaignRepository, 
+                               Campaign_videoRepository campaign_videoRepository, 
+                               Campaign_periodeRepository campaign_periodeRepository, 
+                               Campaign_carouselRepository campaign_carouselRepository, 
+                               TransactionRepository transactionRepository){
         this.campaignRepository = campaignRepository;
         this.campaign_videoRepository = campaign_videoRepository;
         this.campaign_periodeRepository = campaign_periodeRepository;
+        this.campaign_carouselRepository = campaign_carouselRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override 
@@ -117,7 +132,10 @@ public class CampaignServiceImpl implements CampaignService{
 
         String lien_file_base = "/uploadDir/" + newFileName;
 
+        // Copier le fichier dans le dossier du serveur de l'application.
         Files.copy(file.getInputStream(), filePath);
+
+        // System.out.println(lien_file_base);
 
         return lien_file_base;
 
@@ -125,12 +143,16 @@ public class CampaignServiceImpl implements CampaignService{
 
     // "Opérations de sauvegarde interdépendantes"
     @Transactional
-    private void saveCampaignWithVideo(Campaign campaign, Campaign_video campaign_video) throws Exception{
+    private void saveCampaignWithVideo(Campaign campaign, Campaign_video campaign_video, CampaignDto campaignDto) throws Exception{
         
         saveCampaign_video(campaign_video);
         campaign.setCampaign_video(campaign_video);
         campaignRepository.save(campaign);
         saveCampaign_periode(campaign);
+        String nametype_campaign = campaign.getType().getName();
+        if (nametype_campaign.equals("Carousel")) {
+            saveCampaign_carousel(campaignDto,campaign);
+        }
 
     }
 
@@ -149,12 +171,16 @@ public class CampaignServiceImpl implements CampaignService{
         campaign.setDate_fin(campaignDto.getDate_fin());
         campaign.setBudget(campaignDto.getBudget());
         campaign.setVue_max(campaignDto.getVue_max());
-        campaign.setType(campaignDto.getType());
+        campaign.setType(campaignDto.getType()); // ilaina amn url anle video 
         campaign.setAnnonceur(campaignDto.getAnnonceur());
         
+
+        // CAMPAIGN VIDEO 
+
         campaign_video.setName(campaignDto.getName_campaign_video());
-        campaign_video.setUrlVideo(campaignDto.getUrlVideo());
+        campaign_video.setUrlVideo(traitUrlAndVideo(campaignDto, campaign));
         campaign_video.setDescription(campaignDto.getDescription());
+
 
         try {
             String logoBeginBytes = pathFile(campaignDto.getLogo_begin(),campaign.getName());
@@ -165,9 +191,46 @@ public class CampaignServiceImpl implements CampaignService{
             throw new RuntimeException("Erreur lors du traitement des fichiers logo", e);
         }
 
-        saveCampaignWithVideo(campaign,campaign_video);
+        saveCampaignWithVideo(campaign,campaign_video,campaignDto);
 
     }
+
+
+
+    private String traitUrlAndVideo(CampaignDto campaignDto, Campaign campaign){
+
+        String urlVideo = null;
+        Type_campaign type_campaign = campaignDto.getType();
+
+        System.out.println("mandalo traitement video !!!");
+
+        // System.out.println("Type de campagne : [" + type_campaign.getName() + "]" );
+        // System.out.println("video local : " + campaignDto.getVideoLocal());
+        // System.out.println("URL Video : " + campaignDto.getUrlVideo());
+
+        try {
+            if ( type_campaign.getName().equals("Youtube")) {
+                urlVideo = campaignDto.getUrlVideo();  //tonga de apidirina le url 
+            } else if (type_campaign.getName().equals("Publication")) {
+                MultipartFile video_local = campaignDto.getVideoLocal();
+                urlVideo = pathFile(video_local, campaign.getName());   
+            } else if (type_campaign.getName().equals("Carousel")) {
+                urlVideo = "carousel"; 
+            }
+
+
+            if (urlVideo == null) {
+                throw new RuntimeException("URL ou chemin du fichier vidéo est nul");
+            }
+
+            return urlVideo;
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors du traitement du video (traitUrlAndVideo)");
+        }
+        
+    }
+
 
     // TRAITEMENT CAMPAIGN PERIODE BUDGET/JOUR VUE 
 
@@ -259,13 +322,35 @@ public class CampaignServiceImpl implements CampaignService{
 
     }
 
+    private void saveCampaign_carousel(CampaignDto campaignDto, Campaign campaign) throws Exception{
+        List<Campaign_carousel> campaign_carousels = new ArrayList<>();
+        MultipartFile[] img_carousel = campaignDto.getImg_carousel();
+
+        for (MultipartFile multipartFile : img_carousel) {
+            Campaign_carousel campaign_carousel = new Campaign_carousel();
+            String pathImg = pathFile(multipartFile, campaign.getName());
+            campaign_carousel.setUrlImage(pathImg);
+            campaign_carousel.setCampaign(campaign);
+            campaign_carousels.add(campaign_carousel);
+        }
+
+        campaign_carouselRepository.saveAll(campaign_carousels);
+
+
+    }
 
     public List<Campaign_periode> findAllCampaign_periodesByCampaign(Long id_campaign){
         return campaign_periodeRepository.findByCampaignId(id_campaign);
     }
 
+
     
 
+    // TRAITEMENT TRANSACTION STAT
+
+    public void saveTrans(Transaction data){
+        transactionRepository.save(data);
+    }
 
 
    

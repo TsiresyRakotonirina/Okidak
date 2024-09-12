@@ -66,9 +66,11 @@ CREATE TABLE campaigns(
     budget DECIMAL,
     vue_max BIGINT,
     id_type_campaign INT NOT NULL REFERENCES type_campaign(id_type_campaign),
-    id_campaign_video INT NOT NULL REFERENCES campaign_video(id_campaign_video),
-    id_annonceur INT NOT NULL REFERENCES annonceurs(id_annonceur)
+    id_campaign_video BIGINT NOT NULL REFERENCES campaign_video(id_campaign_video),
+    id_annonceur BIGINT NOT NULL REFERENCES annonceurs(id_annonceur)
 ); 
+
+
 
 CREATE TABLE campaign_periode(
     id_campaign_periode BIGSERIAL PRIMARY KEY,
@@ -77,12 +79,53 @@ CREATE TABLE campaign_periode(
     end_date TIMESTAMP,
     budget_periode DECIMAL,
     vue_objectif BIGINT,
-    id_campaign INT NOT NULL REFERENCES campaigns(id)
+    id_campaign BIGINT NOT NULL REFERENCES campaigns(id)
 );
 
 
 
+CREATE TABLE campaign_carousel(
+    id_campaign_carousel BIGSERIAL PRIMARY KEY,
+    urlImage TEXT,
+    id_campaign BIGINT NOT NULL REFERENCES campaigns(id)
+);
 
+
+CREATE TABLE transaction_event(
+    id_stat BIGSERIAL PRIMARY KEY,
+    date_trans TIMESTAMP,
+    id_campaign BIGINT NOT NULL REFERENCES campaigns(id),
+    id_campaign_video BIGINT NOT NULL REFERENCES campaign_video(id_campaign_video),
+    impression BIGINT,
+    lancement BIGINT,
+    vue BIGINT,
+    skip_video BIGINT,
+    quart_lecture BIGINT,
+    demi_lecture BIGINT,
+    troisquart_lecture BIGINT,
+    fin_lecture BIGINT
+);
+
+
+-- date_trans,id_campaign,id_campaign_video,impression,lancement,vue,skip_video,quart_lecture,demi_lecture,troisquart_lecture,fin_lecture
+
+
+-- VIEW 
+-- SELECT id_campaign, 
+--        id_campaign_video, 
+--        SUM(impression) AS nb_impression, 
+--        SUM(lancement) AS nb_lancement, 
+--        SUM(vue) AS nb_vue, 
+--        SUM(skip_video) AS nb_skip_video, 
+--        SUM(quart_lecture) AS nb_quart_lecture, 
+--        SUM(demi_lecture) AS nb_demi_lecture, 
+--        SUM(troisquart_lecture) AS nb_troisquart_lecture, 
+--        SUM(fin_lecture) AS nb_fin_lecture
+-- FROM 
+--        transaction_event
+-- GROUP BY 
+--         id_campaign,
+--         id_campaign_video;
 
 
 

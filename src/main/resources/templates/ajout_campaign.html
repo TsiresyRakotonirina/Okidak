@@ -117,6 +117,7 @@
                         <div class="mb-3">
                             <label for="type" class="form-label">Campaign Type:</label>
                             <select id="type" th:field="*{type}" class="form-select" required>
+                                <option value="" disabled th:selected="${type == null}">Select a type</option>
                                 <option th:each="type : ${campaignTypes}" th:value="${type.id_type_campaign}" th:text="${type.name}"></option>
                             </select>
                         </div>
@@ -124,6 +125,7 @@
                         <div class="mb-3">
                             <label for="annonceur" class="form-label">Announcer:</label>
                             <select id="annonceur" th:field="*{annonceur}" class="form-select" required>
+                                <option value="" disabled th:selected="${annonceur == null}">Select an announcer</option>
                                 <option th:each="annonceur : ${annonceurs}" th:value="${annonceur.id}" th:text="${annonceur.name}"></option>
                             </select>
                         </div>
@@ -138,10 +140,11 @@
                         </div>
                         <br>
                         <!-- URL Video -->
-                        <div class="form-group">
+                        <!-- <div class="form-group">
                             <label for="urlVideo">URL Vidéo</label>
                             <textarea class="form-control" id="urlVideo" name="urlVideo" th:field="*{urlVideo}" rows="3" required></textarea>
-                        </div>
+                        </div> -->
+                        <div id="url"></div>
                         <br>
                         <!-- Logo Begin -->
                         <div class="form-group">
@@ -204,6 +207,58 @@
         <script src="/js/dashboard.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
+
+
+
+        <script>
+
+            document.addEventListener('DOMContentLoaded', function() {
+            var selectElement = document.getElementById('type');
+            var dynamicField = document.getElementById('url');
+
+            selectElement.addEventListener('change', function() {
+                    var selectedOption = selectElement.options[selectElement.selectedIndex]; // recupere l'option selectionner 
+                    var selectedType = selectedOption.text; // Récupère le texte sélectionnée
+
+                    console.log('Selected type:[' + selectedType + "]" );
+
+
+                    dynamicField.innerHTML = ''; // Vider le contenu actuel
+
+                    if (selectedType === 'Youtube') {
+                        // Insérer le champ URL Vidéo
+                        dynamicField.innerHTML = `
+                            <div class="form-group">
+                                <label for="urlVideo">URL Vidéo Youtube</label>
+                                <textarea class="form-control" id="urlVideo" name="urlVideo" th:field="*{urlVideo}" rows="3" required></textarea>
+                            </div>
+                        `;
+                    } else if (selectedType === 'Publication') {
+                        // Insérer le champ Fichier
+                        dynamicField.innerHTML = `
+                            <div class="form-group">
+                                <label for="videoLocal">Sélectionner le fichier vidéo</label>
+                                <input type="file" id="videoLocal" name="videoLocal"  th:field="*{videoLocal}" accept="video/*"  required/>
+                            </div>
+                        `;
+                    } else if(selectedType === 'Carousel') {
+                        // Insérer le champ multiple Fichier
+                        console.log("miditra")
+                        dynamicField.innerHTML = `
+                            <div class="form-group">
+                            <label for="img_carousel">Sélectionner les fichiers images pour la carousel</label>
+                            <input type="file" id="img_carousel" name="img_carousel[]"  th:field="*{img_carousel}" accept="image/*" multiple required/>
+                            </div>
+                        `;
+                    }
+
+                });
+                
+            });
+
+        </script>
+
+
 </body>
 
 </html>

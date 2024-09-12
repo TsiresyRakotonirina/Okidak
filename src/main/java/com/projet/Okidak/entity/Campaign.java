@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,18 +37,22 @@ public class Campaign {
     @Column(nullable=false)
     private int status;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(nullable=false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime date_creation;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(nullable=false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime date_modification;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(nullable=false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime date_debut;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     @Column(nullable=false)
     @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime date_fin;
@@ -68,5 +75,21 @@ public class Campaign {
 
     @OneToMany(mappedBy = "campaign") 
     private List<Campaign_periode> campaign_periode = new ArrayList<>();
+
+    @OneToMany(mappedBy = "campaign")
+    @JsonManagedReference
+    private List<Campaign_carousel> campaign_carousel = new ArrayList<>();
+
+
+
+
+    @Transient
+    private String carouselJson; // Champ temporaire pour stocker les données JSON
+
+
+
+
+
+
     
 }

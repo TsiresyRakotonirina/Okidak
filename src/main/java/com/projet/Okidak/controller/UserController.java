@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projet.Okidak.dto.CampaignDto;
 import com.projet.Okidak.dto.UserDto;
 import com.projet.Okidak.entity.Annonceur;
@@ -22,17 +24,22 @@ import com.projet.Okidak.service.AdminService;
 import com.projet.Okidak.service.CampaignService;
 import com.projet.Okidak.service.UserService;
 
+
+
 @Controller
 public class UserController {
 
     private UserService userService;
     private AdminService adminService;
     private CampaignService campaignService;
+    private final ObjectMapper objectMapper;
 
-    public UserController(UserService userService, AdminService adminService, CampaignService campaignService) {
+
+    public UserController(UserService userService, AdminService adminService, CampaignService campaignService, ObjectMapper objectMapper) {
         this.userService = userService;
         this.adminService = adminService;
         this.campaignService = campaignService;
+        this.objectMapper = objectMapper;
     }
 
 
@@ -87,9 +94,12 @@ public class UserController {
         UserDto userDto = userService.findUserDtoByEmail(emailUser);
         List<Type_campaign> type = adminService.findAllType_campaign();
         List<Annonceur> annonceurs = userService.findAllAnnonceurs();
+        CampaignDto campaignDto = new CampaignDto();
+        campaignDto.setType(null);
+        campaignDto.setAnnonceur(null);
         model.addAttribute("nameUser", utilisateur);
         model.addAttribute("user", userDto);
-        model.addAttribute("campaignDto", new CampaignDto());
+        model.addAttribute("campaignDto", campaignDto);
         model.addAttribute("campaignTypes", type);
         model.addAttribute("annonceurs", annonceurs);
         return "ajout_campaign";
@@ -131,10 +141,30 @@ public class UserController {
         User utilisateur = userService.findUserByEmail(emailUser);
         UserDto userDto = userService.findUserDtoByEmail(emailUser);
         List<Campaign> campaigns = campaignService.findAllCampaigns();
+
+        // Pour chaque campagne, convertir la liste `campaign_carousel` en JSON
+        for (Campaign campaign : campaigns) {
+            try {
+                if (campaign.getCampaign_carousel() != null && !campaign.getCampaign_carousel().isEmpty()) {
+                    String carouselJson = objectMapper.writeValueAsString(campaign.getCampaign_carousel());
+                    campaign.setCarouselJson(carouselJson); // Ajouter une nouvelle propriété `carouselJson`
+                } else {
+                    campaign.setCarouselJson("[]"); // Si la liste est vide, renvoyer un tableau JSON vide
+                }
+            } catch (JsonProcessingException e) {
+                // Gérer l'exception ici (par exemple, enregistrer une erreur ou renvoyer un message par défaut)
+                e.printStackTrace();
+                campaign.setCarouselJson("[]"); // Mettre un JSON vide par défaut en cas d'erreur
+            }
+        }
+
+
         model.addAttribute("nameUser", utilisateur);
         model.addAttribute("user", userDto);
         model.addAttribute("campaigns", campaigns);
+
         return "liste_campaign";
+
     }
 
 
