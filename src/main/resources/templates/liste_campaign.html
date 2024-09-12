@@ -80,9 +80,13 @@
                                 <button type="button" class="btn btn-primary" 
                                         th:data-type_campaign="${campaign.type.name}" 
                                         th:data-url_video="${campaign.campaign_video.urlVideo}"
+                                        th:data-logo_begin="${campaign.campaign_video.logo_begin}"
+                                        th:data-logo_end="${campaign.campaign_video.logo_end}"
                                         th:data-carousel_images="${campaign.carouselJson}"
+
+                                        
                                         data-toggle="modal" data-target="#exampleModalCenter">
-                                    Video/Carousel
+                                    Video / Carousel
                                 </button>
                             </span>
                         </div>
@@ -104,7 +108,14 @@
                                 <div id="cover"></div>
                                 <!-- Conteneur de l'iframe -->
                                 <div id="player-container">
-                                    <div id="player"></div>
+                                    <div id="player">
+                                        <!-- <div id="start-logo" style="display: none; cursor: pointer;">
+                                            <img alt="Logo début" />
+                                        </div>
+                                        <div id="end-logo" style="display: none; cursor: pointer;">
+                                            <img alt="Logo fin" />
+                                        </div> -->
+                                    </div>
                                 </div>
                                 
                             </div>

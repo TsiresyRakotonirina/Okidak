@@ -51,6 +51,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
         };
 
         function checkVideoMilestones(currentTime, duration, milestones) {
+            const tolerance = 0.5; // Tolérance de 0.5 seconde pour considérer que la vidéo est à la fin
             // Vérifier les étapes de progression
             if (!milestones["25%"] && currentTime >= duration * 0.25) {
                 console.log("La vidéo est à 25%");
@@ -64,7 +65,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 console.log("La vidéo est à 75%");
                 milestones["75%"] = true;
             }
-            if (!milestones["100%"] && currentTime >= duration) {
+            if (!milestones["100%"] && (duration - currentTime <= tolerance)) {
                 console.log("La vidéo est à 100%");
                 milestones["100%"] = true;
             }
@@ -111,9 +112,13 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             }
         }
 
-        function onPlayerStateChange(event) {
+        function onPlayerStateChange(event, logo_end) {
             if (event.data === YT.PlayerState.PLAYING) {
                 updateTime();
+            }
+            if (event.data === YT.PlayerState.ENDED) {
+                updateTime();
+                logoFin(logo_end); // Afficher le logo de fin
             }
         }
 
@@ -133,7 +138,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
 
             if (player.getPlayerState() === YT.PlayerState.PLAYING) {
-                setTimeout(updateTime, 1000);
+                setTimeout(updateTime, 500);
             }
 
 
@@ -164,6 +169,39 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             return number < 10 ? '0' + number : number;
         }
 
+        
+
+        function logoFin(logo_end) {
+            var startLogoDiv = document.createElement('div');
+            startLogoDiv.id = 'end-logo'; // Ajouter l'ID
+            startLogoDiv.style.display = 'block'; // Ajouter du style
+            startLogoDiv.style.cursor = 'pointer'; // Ajouter du style
+
+            // Créer l'image à l'intérieur du div start-logo
+            var startLogoImg = document.createElement('img');
+            startLogoImg.alt = 'Logo fin'; // Ajouter l'attribut alt
+            startLogoImg.src = logo_end; // Vous pouvez ajouter une source ici ou plus tard
+
+            // Ajouter l'image au div
+            startLogoDiv.appendChild(startLogoImg);
+
+            // startLogoImg.addEventListener('click', function() {
+            //     affichage(button, campaign_type, videoUrl);
+            // });
+
+            if (player && typeof player.stopVideo === 'function') {
+                player.stopVideo(); 
+                player.destroy(); // Détruire le lecteur YouTube
+                player = undefined; // Réinitialiser la variable player
+                resetMilestones();
+            }
+
+            
+            var playerDiv = document.getElementById('player');
+            playerDiv.innerHTML = ''; // Nettoyer tout contenu précédent
+            playerDiv.appendChild(startLogoDiv); //ajout logo debut video 
+        }
+
 
          // Variable globale pour le lecteur
          var player;
@@ -175,15 +213,39 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
             var videoUrl = button.data('url_video'); 
             var campaign_type = button.data('type_campaign');
+            var logo_begin = button.data('logo_begin');
+            var logo_end = button.data('logo_end');
 
-            // if type de campaign = Publication :
-            console.log(campaign_type);
 
-            
+            // affichage premier logo
+            var startLogoDiv = document.createElement('div');
+            startLogoDiv.id = 'start-logo'; 
+            startLogoDiv.style.display = 'block'; 
+            startLogoDiv.style.cursor = 'pointer'; 
+
+            var startLogoImg = document.createElement('img');
+            startLogoImg.alt = 'Logo début'; 
+            startLogoImg.src = logo_begin; 
+
+            startLogoDiv.appendChild(startLogoImg);
+
+            startLogoImg.addEventListener('click', function() {
+                // Appeler la fonction affichage quand le logo est cliqué
+                affichage(button, campaign_type, videoUrl, logo_end);
+            });
+    
             var playerDiv = document.getElementById('player');
             playerDiv.innerHTML = ''; // Nettoyer tout contenu précédent
-            
-            if (campaign_type == "Publication") {
+            playerDiv.appendChild(startLogoDiv); //ajout logo debut video 
+
+        });
+
+
+
+
+        function affichage(button, campaign_type, videoUrl, logo_end) {
+             // mila atao anaty fonction
+             if (campaign_type == "Publication") {
 
                 // type campaign = publication
 
@@ -236,6 +298,11 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 
                 });
 
+                video.addEventListener('ended', function() {
+                    console.log("La vidéo est terminée !");
+                    logoFin(logo_end);
+                });
+
 
                 // Mettre à jour la vidéo lorsque l'utilisateur fait glisser la barre de progression
                 progressBar.addEventListener('input', function() {
@@ -261,7 +328,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
                 //  type de campaign = Youtube :
 
-
+                // extract l'id du video à partir de l'url video 
                 var video_Id = extractVideoId(videoUrl);
 
                 console.log(player);
@@ -284,14 +351,18 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                             'iv_load_policy': 3, // Désactive les annotations
                             'autohide': 1, // Masque les commandes après la lecture de la vidéo
                             'playsinline': 1, // Joue la vidéo en ligne au lieu de plein écran sur mobile
-                            'enablejsapi': 1 // Active l'API JavaScript
+                            'enablejsapi': 1, // Active l'API JavaScript
+                            'color': 'white',
+                            'theme': 'dark'
                         },
                         events: {
                             'onReady': onPlayerReady,
                             'onError': function(event) {
                                 console.error("Erreur dans le lecteur:", event.data);
                             },
-                            'onStateChange': onPlayerStateChange
+                            'onStateChange': function(event) {
+                                onPlayerStateChange(event, logo_end);
+                            }
                         }
                     });
                 // } else {
@@ -322,7 +393,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 
                 // Trouver le conteneur pour le carrousel dans la modal
                 const carouselContainer = document.getElementById('player');
-                const footerModal = document.getElementById('modal-footer');
+                // const footerModal = document.getElementById('modal-footer');
                 
                 // Nettoyer le conteneur
                 carouselContainer.innerHTML = '';
@@ -404,9 +475,8 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 console.log("Carousel initialized");
 
             }
+        }
 
-
-        });
 
 
         function resetMilestones() {
@@ -444,3 +514,44 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             
         });
 
+
+
+    // // initialisation des parametres 
+    // var impression = false;
+    // var lancement = false;
+    // var vue = false;
+    // var skip_video = false;
+    // var quart_lecture = false;
+    // var demi_lecture = false;
+    // var troisquart_lecture = false;
+    // var fin_lecture = false;
+
+
+
+    // fonction de transaction
+    // function transmettreEvent() {
+    //     const url = '/api/trans/save';
+        
+    //     fetch(url, {
+    //         method: 'POST',
+    //         body: JSON.stringify({
+    //             dateTransaction: new Date(),
+    //             idCampaign: campaignId,
+    //             idCampaignVideo: campaignVideoId,
+    //             impression: true,
+    //             launch: false,
+    //             view: false,
+    //             skipVideo: false,
+    //             quartLecture: false,
+    //             demiLecture: false,
+    //             troisQuartLecture: false,
+    //             finLecture: false
+    //         }),
+    //         headers: {
+    //             'Content-Type': 'application/json'
+    //         }
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => console.log('Événements enregistrés avec succès:', data))
+    //     .catch(error => console.error('Erreur lors de l\'enregistrement des événements:', error));
+    // }

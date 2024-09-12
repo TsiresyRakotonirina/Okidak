@@ -18,16 +18,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.projet.Okidak.dto.CampaignDto;
+// import com.projet.Okidak.dto.StatDto;
 import com.projet.Okidak.entity.Campaign;
 import com.projet.Okidak.entity.Campaign_carousel;
 import com.projet.Okidak.entity.Campaign_periode;
 import com.projet.Okidak.entity.Campaign_video;
+import com.projet.Okidak.entity.Transaction;
 import com.projet.Okidak.entity.Type_campaign;
 import com.projet.Okidak.modele.Interval;
 import com.projet.Okidak.repository.CampaignRepository;
 import com.projet.Okidak.repository.Campaign_carouselRepository;
 import com.projet.Okidak.repository.Campaign_periodeRepository;
 import com.projet.Okidak.repository.Campaign_videoRepository;
+import com.projet.Okidak.repository.TransactionRepository;
 import com.projet.Okidak.service.CampaignService;
 
 import java.security.SecureRandom;
@@ -42,12 +45,18 @@ public class CampaignServiceImpl implements CampaignService{
     private Campaign_videoRepository campaign_videoRepository;
     private Campaign_periodeRepository campaign_periodeRepository; 
     private Campaign_carouselRepository campaign_carouselRepository;
+    private TransactionRepository transactionRepository;
 
-    public CampaignServiceImpl(CampaignRepository campaignRepository, Campaign_videoRepository campaign_videoRepository, Campaign_periodeRepository campaign_periodeRepository, Campaign_carouselRepository campaign_carouselRepository){
+    public CampaignServiceImpl(CampaignRepository campaignRepository, 
+                               Campaign_videoRepository campaign_videoRepository, 
+                               Campaign_periodeRepository campaign_periodeRepository, 
+                               Campaign_carouselRepository campaign_carouselRepository, 
+                               TransactionRepository transactionRepository){
         this.campaignRepository = campaignRepository;
         this.campaign_videoRepository = campaign_videoRepository;
         this.campaign_periodeRepository = campaign_periodeRepository;
         this.campaign_carouselRepository = campaign_carouselRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override 
@@ -337,6 +346,11 @@ public class CampaignServiceImpl implements CampaignService{
 
     
 
+    // TRAITEMENT TRANSACTION STAT
+
+    public void saveTrans(Transaction data){
+        transactionRepository.save(data);
+    }
 
 
    
