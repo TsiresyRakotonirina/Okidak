@@ -56,14 +56,23 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             if (!milestones["25%"] && currentTime >= duration * 0.25) {
                 console.log("La vidéo est à 25%");
                 milestones["25%"] = true;
+                quart_lecture = 1;
+                transmettreEvent();
+                quart_lecture = 0;
             }
             if (!milestones["50%"] && currentTime >= duration * 0.50) {
                 console.log("La vidéo est à 50%");
                 milestones["50%"] = true;
+                demi_lecture = 1;
+                transmettreEvent();
+                demi_lecture = 0;
             }
             if (!milestones["75%"] && currentTime >= duration * 0.75) {
                 console.log("La vidéo est à 75%");
                 milestones["75%"] = true;
+                troisquart_lecture = 1;
+                transmettreEvent();
+                troisquart_lecture = 0;
             }
             if (!milestones["100%"] && (duration - currentTime <= tolerance)) {
                 console.log("La vidéo est à 100%");
@@ -118,6 +127,9 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             }
             if (event.data === YT.PlayerState.ENDED) {
                 updateTime();
+                fin_lecture = 1;
+                transmettreEvent();
+                fin_lecture = 0;
                 logoFin(logo_end); // Afficher le logo de fin
             }
         }
@@ -196,6 +208,14 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 resetMilestones();
             }
 
+            // Arrêter la vidéo HTML5 si elle existe
+            // var videoElement = document.querySelector('#player');
+            var videoElement = document.getElementById('video');
+            if (videoElement) {
+                videoElement.pause();
+                videoElement.src = '';
+            }
+
             
             var playerDiv = document.getElementById('player');
             playerDiv.innerHTML = ''; // Nettoyer tout contenu précédent
@@ -203,9 +223,57 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
         }
 
 
-         // Variable globale pour le lecteur
-         var player;
-         var playerReadyDeferred = $.Deferred();
+        // Variable globale pour le lecteur
+        var player;
+        var playerReadyDeferred = $.Deferred();
+
+
+    var campaignId;
+    var campaignVideoId; 
+
+
+    // // initialisation des parametres 
+    var impression = 0;
+    var lancement = 0;
+    var vue = 0;
+    var skip_video = 0;
+    var quart_lecture = 0;
+    var demi_lecture = 0;
+    var troisquart_lecture = 0;
+    var fin_lecture = 0;
+
+
+
+    // fonction de transaction
+    function transmettreEvent() {
+        const url = '/api/trans/save';
+        
+        fetch(url, {
+            method: 'POST',
+            body: JSON.stringify({
+                date_trans: new Date(),
+                id_campaign: campaignId,
+                id_campaign_video: campaignVideoId,
+                impression: impression,
+                lancement: lancement,
+                vue: vue,
+                skip_video: skip_video,
+                quart_lecture: quart_lecture,
+                demi_lecture: demi_lecture,
+                troisquart_lecture: troisquart_lecture,
+                fin_lecture: fin_lecture
+            }),
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => {
+            console.log(response); // Ajout du log pour voir la réponse
+            return response.json(); // Tentative de conversion en JSON
+        })
+        .then(data => console.log('Événements enregistrés avec succès:', data))
+        .catch(error => console.error('Erreur lors de l\'enregistrement des événements:', error));
+    }
 
         // Écouteur pour l'événement d'ouverture de la modal
         $('#exampleModalCenter').on('show.bs.modal', function (event) {
@@ -215,6 +283,19 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             var campaign_type = button.data('type_campaign');
             var logo_begin = button.data('logo_begin');
             var logo_end = button.data('logo_end');
+
+            campaignId = button.data('campaign_id');
+            campaignVideoId = button.data('campaign_video_id');
+
+            console.log(campaignId);
+            console.log(button.data('campaign_id'));
+
+            // changement etat impression STAT
+            impression = 1
+            // transmettre donnée
+            transmettreEvent();
+            // reinitialiser l'impression
+            impression = 0;
 
 
             // affichage premier logo
@@ -232,6 +313,11 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             startLogoImg.addEventListener('click', function() {
                 // Appeler la fonction affichage quand le logo est cliqué
                 affichage(button, campaign_type, videoUrl, logo_end);
+                lancement = 1;
+                vue = 1;
+                transmettreEvent();
+                lancement = 0;
+                vue = 0;
             });
     
             var playerDiv = document.getElementById('player');
@@ -301,6 +387,9 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 video.addEventListener('ended', function() {
                     console.log("La vidéo est terminée !");
                     logoFin(logo_end);
+                    fin_lecture = 1;
+                    transmettreEvent();
+                    fin_lecture = 0;
                 });
 
 
@@ -490,6 +579,11 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
         // Écouteur pour l'événement de fermeture de la modal
         $('#exampleModalCenter').on('hidden.bs.modal', function () {
+
+
+            campaignId = null;
+            campaignVideoId = null;
+
            // Arrêter la vidéo YouTube si le lecteur existe
             if (player && typeof player.stopVideo === 'function') {
                 player.stopVideo(); 
@@ -516,42 +610,4 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
 
 
-    // // initialisation des parametres 
-    // var impression = false;
-    // var lancement = false;
-    // var vue = false;
-    // var skip_video = false;
-    // var quart_lecture = false;
-    // var demi_lecture = false;
-    // var troisquart_lecture = false;
-    // var fin_lecture = false;
-
-
-
-    // fonction de transaction
-    // function transmettreEvent() {
-    //     const url = '/api/trans/save';
-        
-    //     fetch(url, {
-    //         method: 'POST',
-    //         body: JSON.stringify({
-    //             dateTransaction: new Date(),
-    //             idCampaign: campaignId,
-    //             idCampaignVideo: campaignVideoId,
-    //             impression: true,
-    //             launch: false,
-    //             view: false,
-    //             skipVideo: false,
-    //             quartLecture: false,
-    //             demiLecture: false,
-    //             troisQuartLecture: false,
-    //             finLecture: false
-    //         }),
-    //         headers: {
-    //             'Content-Type': 'application/json'
-    //         }
-    //     })
-    //     .then(response => response.json())
-    //     .then(data => console.log('Événements enregistrés avec succès:', data))
-    //     .catch(error => console.error('Erreur lors de l\'enregistrement des événements:', error));
-    // }
+   

@@ -35,6 +35,7 @@ public class SpringSecurity{
                                 .requestMatchers("/index").permitAll()
                                 .requestMatchers("/users","/add_departement","/departement/save","/add_type_campaign","/type_campaign/save").hasRole("ADMIN")
                                 .requestMatchers("/home","/add_annonceur","/annonceur/save","/add_campaign","/campaign/save","/liste_campaign","/liste_campaign_periode").hasRole("USER")
+                                .requestMatchers("/api/trans/save").hasRole("USER")
                                 // .requestMatchers("/page1", "/page2").authenticated()
                                 .requestMatchers("/static/**", "/css/**", "/fonts/**","/js/**", "/images/**","/uploadDir/**").permitAll()
                                 .requestMatchers("/layout").permitAll()
