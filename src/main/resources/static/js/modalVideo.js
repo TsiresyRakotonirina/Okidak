@@ -482,23 +482,23 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 
                 // Trouver le conteneur pour le carrousel dans la modal
                 const carouselContainer = document.getElementById('player');
-                // const footerModal = document.getElementById('modal-footer');
                 
                 // Nettoyer le conteneur
                 carouselContainer.innerHTML = '';
                 
                 // Créer le carrousel et ajouter les images
                 const carouselDiv = document.createElement('div');
-                carouselDiv.id = 'myCarousel';
+                carouselDiv.id = 'my_carousel';
                 carouselDiv.className = 'carousel slide';
-                carouselDiv.setAttribute('data-ride', 'carousel');
+                // carouselDiv.setAttribute('data-ride', 'carousel');
+
                 
                 // Création des indicateurs
                 const indicators = document.createElement('ol');
                 indicators.className = 'carousel-indicators';
                 carouselImages.forEach((_, index) => {
                     const li = document.createElement('li');
-                    li.setAttribute('data-target', '#myCarousel');
+                    li.setAttribute('data-target', '#my_carousel');
                     li.setAttribute('data-slide-to', index);
                     if (index === 0) li.className = 'active'; // Première diapositive active par défaut
                     indicators.appendChild(li);
@@ -528,13 +528,13 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 // Création des contrôles gauche et droite
                 const leftControl = document.createElement('a');
                 leftControl.className = 'left carousel-control';
-                leftControl.href = '#myCarousel';
+                leftControl.href = '#my_carousel';
                 leftControl.setAttribute('data-slide', 'prev');
                 leftControl.innerHTML = '<span class="glyphicon glyphicon-chevron-left"></span><span class="sr-only">Précédent</span>';
                 
                 const rightControl = document.createElement('a');
                 rightControl.className = 'right carousel-control';
-                rightControl.href = '#myCarousel';
+                rightControl.href = '#my_carousel';
                 rightControl.setAttribute('data-slide', 'next');
                 rightControl.innerHTML = '<span class="glyphicon glyphicon-chevron-right"></span><span class="sr-only">Suivant</span>';
                 
@@ -545,22 +545,29 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
                 carouselDiv.appendChild(leftControl);
                 carouselDiv.appendChild(rightControl);
-                
-                
+
+                console.log($('#my_carousel').length);
+
+                // Supprimer tout carrousel déjà présent pour éviter des conflits
+                if ($('#my_carousel').length) {
+                    $('#my_carousel').carousel('dispose'); 
+                }
+
                 // Ajout du carrousel au conteneur de la page
                 carouselContainer.appendChild(carouselDiv);
 
-               // Activer le carrousel Bootstrap après l'ajout
-                $('#myCarousel').carousel({
-                    interval: 3000, // Diapositive toutes les 3 secondes
-                    ride: 'carousel',
-                    pause: false
-                });
+                // Initialiser le carrousel avec un intervalle automatique
+                setTimeout(function() {
+                    // Initialiser le carrousel
+                    $('#my_carousel').carousel({
+                        interval: 3000,  // Diapositive toutes les 3 secondes
+                        pause: false     // Ne pas mettre en pause au survol
+                    });
+                
+                    // Forcer le démarrage immédiat
+                    $('#my_carousel').carousel('cycle');
+                }, 100); // Délai pour garantir que le DOM est complètement rendu
 
-                
-                // Forcer le démarrage du cycle
-                $('#myCarousel').carousel('cycle');
-                
                 console.log("Carousel initialized");
 
             }
@@ -601,7 +608,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             }
 
             // reinitialiser
-            var carousel = document.getElementById('myCarousel');
+            var carousel = document.getElementById('my_carousel');
             if (carousel){
 
             }

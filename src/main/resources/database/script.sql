@@ -114,22 +114,22 @@ CREATE TABLE transaction_event(
 
 
 -- VIEW 
-CREATE OR REPLACE VIEW statistique_video AS
-SELECT id_campaign, 
-       id_campaign_video, 
-       SUM(impression) AS nb_impression, 
-       SUM(lancement) AS nb_lancement, 
-       SUM(vue) AS nb_vue, 
-       SUM(skip_video) AS nb_skip_video, 
-       SUM(quart_lecture) AS nb_quart_lecture, 
-       SUM(demi_lecture) AS nb_demi_lecture, 
-       SUM(troisquart_lecture) AS nb_troisquart_lecture, 
-       SUM(fin_lecture) AS nb_fin_lecture
-FROM 
-       transaction_event
-GROUP BY 
-        id_campaign,
-        id_campaign_video;
+-- CREATE OR REPLACE VIEW statistique_video AS
+-- SELECT id_campaign, 
+--        id_campaign_video, 
+--        SUM(impression) AS nb_impression, 
+--        SUM(lancement) AS nb_lancement, 
+--        SUM(vue) AS nb_vue, 
+--        SUM(skip_video) AS nb_skip_video, 
+--        SUM(quart_lecture) AS nb_quart_lecture, 
+--        SUM(demi_lecture) AS nb_demi_lecture, 
+--        SUM(troisquart_lecture) AS nb_troisquart_lecture, 
+--        SUM(fin_lecture) AS nb_fin_lecture
+-- FROM 
+--        transaction_event
+-- GROUP BY 
+--         id_campaign,
+--         id_campaign_video;
 
 
 
