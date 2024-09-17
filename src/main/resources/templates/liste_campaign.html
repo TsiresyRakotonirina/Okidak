@@ -27,6 +27,8 @@
 
     <!-- css hipetrahanle video  -->
     <link rel="stylesheet" href="/css/modal.css">
+    <link rel="stylesheet" href="/css/progress-bar.css">
+    
 
 
 <body>
@@ -74,9 +76,23 @@
                             <span class="info-box-text col-md-2" style="text-transform: none;" th:text="${campaign.name}"></span>
                             <span class="info-box-number col-md-2" th:text="${campaign.status}"></span>
                             <span class="info-box-text col-md-2" style="text-transform: none;" th:text="${#temporals.format(campaign.date_debut, 'dd/MM/yyyy HH:mm')} + ' - ' + ${#temporals.format(campaign.date_fin, 'dd/MM/yyyy HH:mm')}"></span>
-                            <span class="info-box-text col-md-3" style="text-transform: none;" > <a th:href="@{/liste_campaign_periode(id_campaign=${campaign.id})}" class="btn btn-primary">Voir les periodes</a> </span>
+
+                            <span class="info-box-text col-md-4" style="text-transform: none;">
+                                <div class="progress">
+                                    <div th:id="'progress-bar-' + ${campaign.id}" class="progress-bar progress-bar-blue" role="progressbar" style="width: 0%;"
+                                        th:data-start="${#temporals.format(campaign.date_debut, 'dd/MM/yyyy HH:mm')}"
+                                        th:data-end="${#temporals.format(campaign.date_fin, 'dd/MM/yyyy HH:mm')}"
+                                    >
+                                        <!-- <span class="progress-bar-tooltip">0%</span> -->
+                                         0%
+                                    </div>
+                                </div>
+                            </span>
+
+
+                            <span class="info-box-text col-md-1" style="text-transform: none;" > <a th:href="@{/liste_campaign_periode(id_campaign=${campaign.id})}" class="btn btn-primary">Voir les periodes</a> </span>
                             
-                            <span class="info-box-text col-md-3" style="text-transform: none;" > 
+                            <span class="info-box-text col-md-1" style="text-transform: none;" > 
                                 <button type="button" class="btn btn-primary" 
                                         th:data-type_campaign="${campaign.type.name}" 
                                         th:data-url_video="${campaign.campaign_video.urlVideo}"
@@ -92,6 +108,8 @@
                             </span>
                         </div>
                     </div>
+
+
                 </div>  
 
                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
@@ -110,21 +128,32 @@
                                 <!-- Conteneur de l'iframe -->
                                 <div id="player-container">
                                     <div id="player">
-                                        <!-- <div id="start-logo" style="display: none; cursor: pointer;">
-                                            <img alt="Logo début" />
-                                        </div>
-                                        <div id="end-logo" style="display: none; cursor: pointer;">
-                                            <img alt="Logo fin" />
-                                        </div> -->
+                                        
                                     </div>
                                 </div>
                                 
                             </div>
                             <div class="modal-footer" id="modal-footer">
-                                <input type="range" id="progress-bar" value="0" min="0" max="100">
-                                <span id="current-time">00:00</span> / <span id="duration">00:00</span>
-                                <button id="playButton" class="btn btn-primary"></button> 
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <div class="row">
+                                    <input type="range" id="progress-bar" value="0" min="0" max="100">
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 text-right">
+                                        <span id="temps_vid">
+                                            <span id="current-time">00:00</span> / <span id="duration">00:00</span>
+                                        </span>
+                                        <button id="playButton" class="btn btn-primary">Play/Pause</button> 
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+                                        <div id="bouton_skip"></div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -171,7 +200,6 @@
 
     <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 
-    <!-- <script src="https://www.youtube.com/iframe_api"></script> -->
 
     <!-- script pour les videos youtubes -->
     <script src="/js/modalVideo.js"></script>

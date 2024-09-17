@@ -87,12 +87,14 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
         }
 
 
+        
 
         // Fonction appelée lorsque le lecteur est prêt
         function onPlayerReady(event) {
             var playButton = $('#playButton');
             console.log("Le lecteur est prêt");
-
+            event.target.playVideo(); 
+            bouton_skip();
             document.getElementById('progress-bar').addEventListener('input', seekVideo);
 
             updatePlayButtonText();
@@ -283,6 +285,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             var campaign_type = button.data('type_campaign');
             var logo_begin = button.data('logo_begin');
             var logo_end = button.data('logo_end');
+        
 
             campaignId = button.data('campaign_id');
             campaignVideoId = button.data('campaign_video_id');
@@ -328,10 +331,43 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
 
 
+        function bouton_skip() {
+            setTimeout(function () {
+                var bouton_skip = document.getElementById('bouton_skip');
+                var button = document.createElement('button');
+                button.type = 'button';
+                button.innerHTML = 'Skip Vidéo';
+                button.className = 'btn btn-primary';
+                
+                bouton_skip.appendChild(button);
+
+                var videoElement = document.getElementById('video');
+                button.addEventListener('click', function() {
+                    if (videoElement) {
+                        video.currentTime = video.duration; 
+                        skip_video = 1;
+                        transmettreEvent();
+                        skip_video = 0;
+                        bouton_skip.innerHTML = '';
+                    } else if (player) {
+                        player.seekTo(player.getDuration()); 
+                        skip_video = 1;
+                        transmettreEvent();
+                        skip_video = 0;
+                        bouton_skip.innerHTML = '';
+                    }
+                });
+
+
+            }, 3000);
+        }
+
 
         function affichage(button, campaign_type, videoUrl, logo_end) {
-             // mila atao anaty fonction
-             if (campaign_type == "Publication") {
+
+               
+            // mila atao anaty fonction
+            if (campaign_type == "Publication") {
 
                 // type campaign = publication
 
@@ -371,12 +407,17 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
                 // Récupérer l'élément vidéo et la barre de progression
                 var video = document.getElementById('video');
+                video.play();
+                bouton_skip();
+
                 var progressBar = document.getElementById('progress-bar');
 
                 // Mettre à jour la barre de progression lorsque la vidéo se joue
                 video.addEventListener('timeupdate', function() {
                     var value = (100 / video.duration) * video.currentTime;
                     progressBar.value = value;
+
+                    
                    
                     var currentTime = video.currentTime;
                     var duration = video.duration; 
@@ -546,32 +587,138 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 carouselDiv.appendChild(leftControl);
                 carouselDiv.appendChild(rightControl);
 
-                console.log($('#my_carousel').length);
+                console.log("nombre de carrousel : " + $('#my_carousel').length);
 
                 // Supprimer tout carrousel déjà présent pour éviter des conflits
                 if ($('#my_carousel').length) {
                     $('#my_carousel').carousel('dispose'); 
                 }
 
+                let totalImages = carouselImages.length;
                 // Ajout du carrousel au conteneur de la page
                 carouselContainer.appendChild(carouselDiv);
 
-                // Initialiser le carrousel avec un intervalle automatique
-                setTimeout(function() {
-                    // Initialiser le carrousel
-                    $('#my_carousel').carousel({
-                        interval: 3000,  // Diapositive toutes les 3 secondes
-                        pause: false     // Ne pas mettre en pause au survol
-                    });
-                
-                    // Forcer le démarrage immédiat
-                    $('#my_carousel').carousel('cycle');
-                }, 100); // Délai pour garantir que le DOM est complètement rendu
+                // supprimer le controlle des videos
+                // var sup_temps = document.getElementById('temps_vid');
+                // sup_temps.innerHTML = ''; 
 
-                console.log("Carousel initialized");
+                console.log("nombre de carrousel : " + $('#my_carousel').length);
+
+
+                setTimeout(function() {
+                    if ($('#my_carousel').length) {
+                        $('#my_carousel').carousel({
+                            interval: 3000,  
+                            pause: false     
+                        });
+                        $('#my_carousel').carousel('cycle');
+                    }
+                }, 100);
+
+                console.log("Total image carrousel : " + totalImages);
+
+                if ($('#my_carousel').length) {
+                    $('#my_carousel').on('slid.bs.carousel', function (event) {
+                        currentSlide = $(event.relatedTarget).index();
+                        console.log('Diapositive actuelle:', currentSlide);
+                        checkCycleStage(totalImages);
+
+                        if (currentSlide === totalImages - 1) {
+                            logoFin(logo_end);
+
+                            // Supprimer les événements du carrousel
+                            console.log('Suppression des événements du carrousel');
+                            $('#my_carousel').off('slid.bs.carousel');
+                            
+                            // Désactiver le carrousel
+                            $('#my_carousel').carousel('pause');
+                            $('#my_carousel').carousel('dispose');
+
+                            // Supprimer l'élément du DOM
+                            $('#my_carousel').remove();
+
+                            // Vérification après un délai si l'élément est bien supprimé
+                            setTimeout(function() {
+                                if (!$('#my_carousel').length) {
+                                    console.log('Carrousel correctement désactivé et supprimé.');
+                                } else {
+                                    console.log('Le carrousel semble toujours actif.');
+                                }
+                            }, 100);
+                        }
+                    });
+                } else {
+                    console.log('Carrousel non trouvé dans le DOM.');
+                }
+
+                // Ajouter des logs détaillés pour traquer les événements
+                setTimeout(function() {
+                    console.log('Vérification des événements après suppression.');
+                    var events = $._data($('#my_carousel')[0], 'events');
+                    if (events) {
+                        console.log('Événements encore présents :', events);
+                    } else {
+                        console.log('Aucun événement restant.');
+                    }
+                }, 500);
+
 
             }
         }
+
+
+
+                // Initialiser les variables pour suivre l'état du carrousel
+                // let totalImages = document.querySelectorAll('#my_carousel .carousel-inner .item').length;
+                let currentSlide = 0; // On commence à la première diapositive
+                let quarterReached = false;
+                let halfReached = false;
+                let threeQuarterReached = false;
+                let endReached = false;
+
+                // Fonction pour vérifier les étapes du cycle
+                function checkCycleStage(totalImages) {
+                    let quarterSlide = Math.round(totalImages / 4);
+                    let halfSlide = Math.round(totalImages / 2);
+                    let threeQuarterSlide = Math.round((3 * totalImages) / 4);
+                    let endSlide = totalImages - 1; // Index de la dernière image
+
+                    // Un quart du cycle atteint
+                    if (currentSlide === quarterSlide && !quarterReached) {
+                        quarterReached = true;
+                        console.log('Un quart du cycle atteint');
+                        quart_lecture = 1; // Activer la variable `quart_lecture`
+                        transmettreEvent(); // Transmettre l'événement
+                        quart_lecture = 0;
+                    }
+
+                    // La moitié du cycle atteinte
+                    if (currentSlide === halfSlide && !halfReached) {
+                        halfReached = true;
+                        console.log('La moitié du cycle atteinte');
+                        demi_lecture = 1; // Activer la variable `demi_lecture`
+                        transmettreEvent();
+                        demi_lecture = 0;
+                    }
+
+                    // Les trois quarts du cycle atteints
+                    if (currentSlide === threeQuarterSlide && !threeQuarterReached) {
+                        threeQuarterReached = true;
+                        console.log('Les trois quarts du cycle atteints');
+                        troisquart_lecture = 1; // Activer la variable `troisquart_lecture`
+                        transmettreEvent();
+                        troisquart_lecture = 0;
+                    }
+
+                    // Fin du cycle atteinte
+                    if (currentSlide === endSlide && !endReached) {
+                        endReached = true;
+                        console.log('Fin du cycle atteinte');
+                        fin_lecture = 1; // Activer la variable `fin_lecture`
+                        transmettreEvent();
+                        fin_lecture = 0;
+                    }
+                }
 
 
 
@@ -607,14 +754,80 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 videoElement.src = '';
             }
 
-            // reinitialiser
-            var carousel = document.getElementById('my_carousel');
-            if (carousel){
 
+            // Vérifie si le carrousel existe avant de procéder
+            if ($('#my_carousel').length) {
+                
+                // Supprimer l'écouteur d'événement avant de désactiver le carrousel
+                $('#my_carousel').off('slid.bs.carousel');
+                
+                // Désactiver le carrousel avec Bootstrap
+                $('#my_carousel').carousel('dispose'); 
+
+                console.log('Carrousel arrêté et écouteur supprimé');
             }
+
+            const carouselContainer = document.getElementById('player');
+            carouselContainer.innerHTML = '';
+
+            var bouton_skip = document.getElementById('bouton_skip');
+            bouton_skip.innerHTML = '';
+
             
         });
 
 
 
-   
+        document.addEventListener("DOMContentLoaded", function() {
+            
+            const progressBars = document.querySelectorAll(".progress-bar");
+
+            progressBars.forEach(progressBar => {
+                
+                const startDateText = progressBar.getAttribute("data-start");
+                const endDateText = progressBar.getAttribute("data-end");
+
+                const currentDate = new Date();
+                const startDate = parseDate(startDateText);
+                const endDate = parseDate(endDateText);
+        
+                // Calculer la progression
+                const totalDuration = endDate - startDate;
+                const currentDuration = currentDate - startDate;
+                const progressPercent = (currentDuration / totalDuration) * 100;
+        
+                if (progressPercent >= 0 && progressPercent <= 100) {
+                    progressBar.style.width = progressPercent + "%";
+                    progressBar.innerHTML = Math.floor(progressPercent) + "%";
+                } else if (progressPercent > 100) {
+                    progressBar.style.width = "100%";
+                    progressBar.innerHTML = "100%";
+                } else {
+                    progressBar.style.width = "0%";
+                    progressBar.innerHTML = "0%";
+                }
+            });
+        });
+
+
+
+        // Fonction pour convertir 'dd/MM/yyyy HH:mm' en Date
+        function parseDate(dateString) {
+            const [day, month, yearAndTime] = dateString.split('/');
+            const [year, time] = yearAndTime.split(' ');
+            const [hours, minutes] = time.split(':');
+            
+            // Les mois en JavaScript sont indexés de 0 (janvier) à 11 (décembre)
+            return new Date(year, month - 1, day, hours, minutes);
+        }
+
+
+        // $(document).ready(function() {
+        //     $('.progress-bar').each(function() {
+        //         var $this = $(this);
+        //         var width = $this.attr('style').match(/width:\s*(\d+)%/)[1];
+        //         $this.attr('data-toggle', 'tooltip')
+        //              .attr('data-original-title', width + '%')
+        //              .tooltip({ trigger: 'hover', placement: 'top' });
+        //     });
+        // });
