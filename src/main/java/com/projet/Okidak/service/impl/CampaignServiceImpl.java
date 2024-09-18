@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.projet.Okidak.dto.CampaignDto;
-// import com.projet.Okidak.dto.StatDto;
+import com.projet.Okidak.entity.Stat_video;
 import com.projet.Okidak.entity.Campaign;
 import com.projet.Okidak.entity.Campaign_carousel;
 import com.projet.Okidak.entity.Campaign_periode;
@@ -30,6 +30,7 @@ import com.projet.Okidak.repository.CampaignRepository;
 import com.projet.Okidak.repository.Campaign_carouselRepository;
 import com.projet.Okidak.repository.Campaign_periodeRepository;
 import com.projet.Okidak.repository.Campaign_videoRepository;
+import com.projet.Okidak.repository.Stat_videoRepository;
 import com.projet.Okidak.repository.TransactionRepository;
 import com.projet.Okidak.service.CampaignService;
 
@@ -46,17 +47,20 @@ public class CampaignServiceImpl implements CampaignService{
     private Campaign_periodeRepository campaign_periodeRepository; 
     private Campaign_carouselRepository campaign_carouselRepository;
     private TransactionRepository transactionRepository;
+    private Stat_videoRepository stat_videoRepository;
 
     public CampaignServiceImpl(CampaignRepository campaignRepository, 
                                Campaign_videoRepository campaign_videoRepository, 
                                Campaign_periodeRepository campaign_periodeRepository, 
                                Campaign_carouselRepository campaign_carouselRepository, 
-                               TransactionRepository transactionRepository){
+                               TransactionRepository transactionRepository,
+                               Stat_videoRepository stat_videoRepository){
         this.campaignRepository = campaignRepository;
         this.campaign_videoRepository = campaign_videoRepository;
         this.campaign_periodeRepository = campaign_periodeRepository;
         this.campaign_carouselRepository = campaign_carouselRepository;
         this.transactionRepository = transactionRepository;
+        this.stat_videoRepository = stat_videoRepository;
     }
 
     @Override 
@@ -348,8 +352,14 @@ public class CampaignServiceImpl implements CampaignService{
 
     // TRAITEMENT TRANSACTION STAT
 
+    @Override
     public void saveTrans(Transaction data){
         transactionRepository.save(data);
+    }
+
+    @Override
+    public Stat_video findStat_videoByIdCampaign(Long id_campaign){
+        return stat_videoRepository.findByIdCampaign(id_campaign);
     }
 
 

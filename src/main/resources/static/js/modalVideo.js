@@ -275,6 +275,8 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
         })
         .then(data => console.log('Événements enregistrés avec succès:', data))
         .catch(error => console.error('Erreur lors de l\'enregistrement des événements:', error));
+
+
     }
 
         // Écouteur pour l'événement d'ouverture de la modal
@@ -344,7 +346,9 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 var videoElement = document.getElementById('video');
                 button.addEventListener('click', function() {
                     if (videoElement) {
-                        video.currentTime = video.duration; 
+                        var endedEvent = new Event('ended');
+                        video.dispatchEvent(endedEvent); 
+                        // video.currentTime = video.duration; 
                         skip_video = 1;
                         transmettreEvent();
                         skip_video = 0;
@@ -624,27 +628,50 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                         checkCycleStage(totalImages);
 
                         if (currentSlide === totalImages - 1) {
+                            
+
+                            // // Supprimer les événements du carrousel
+                            // console.log('Suppression des événements du carrousel');
+                            // $('#my_carousel').off('slid.bs.carousel');
+                            
+                            // // Désactiver le carrousel
+                            // $('#my_carousel').carousel('pause');
+                            // $('#my_carousel').carousel('dispose');
+
+                            // // Supprimer l'élément du DOM
+                            // $('#my_carousel').remove();
+
+                            // // Vérification après un délai si l'élément est bien supprimé
+                            // setTimeout(function() {
+                            //     if (!$('#my_carousel').length) {
+                            //         console.log('Carrousel correctement désactivé et supprimé.');
+                            //     } else {
+                            //         console.log('Le carrousel semble toujours actif.');
+                            //     }
+                            // }, 100);
+                            // Vérifie si le carrousel existe avant de procéder
+
+                            ///
+
+                            // if ($('#my_carousel').length) {
+                                
+                                // Supprimer l'écouteur d'événement avant de désactiver le carrousel
+                                $('#my_carousel').off('slid.bs.carousel');
+                                
+                                // Désactiver le carrousel avec Bootstrap
+                                $('#my_carousel').carousel('dispose'); 
+                                
+                                $('#my_carousel').remove();
+
+                                console.log('Carrousel arrêté et écouteur supprimé');
+                            // }
+                            
+                            var playerDiv = document.getElementById('player');
+                            playerDiv.innerHTML = ''; 
+                            
                             logoFin(logo_end);
 
-                            // Supprimer les événements du carrousel
-                            console.log('Suppression des événements du carrousel');
-                            $('#my_carousel').off('slid.bs.carousel');
-                            
-                            // Désactiver le carrousel
-                            $('#my_carousel').carousel('pause');
-                            $('#my_carousel').carousel('dispose');
 
-                            // Supprimer l'élément du DOM
-                            $('#my_carousel').remove();
-
-                            // Vérification après un délai si l'élément est bien supprimé
-                            setTimeout(function() {
-                                if (!$('#my_carousel').length) {
-                                    console.log('Carrousel correctement désactivé et supprimé.');
-                                } else {
-                                    console.log('Le carrousel semble toujours actif.');
-                                }
-                            }, 100);
                         }
                     });
                 } else {
@@ -799,6 +826,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 if (progressPercent >= 0 && progressPercent <= 100) {
                     progressBar.style.width = progressPercent + "%";
                     progressBar.innerHTML = Math.floor(progressPercent) + "%";
+                    // progressBar.setAttribute("aria-valuenow", progressPercent);
                 } else if (progressPercent > 100) {
                     progressBar.style.width = "100%";
                     progressBar.innerHTML = "100%";
@@ -822,12 +850,25 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
         }
 
 
-        // $(document).ready(function() {
-        //     $('.progress-bar').each(function() {
-        //         var $this = $(this);
-        //         var width = $this.attr('style').match(/width:\s*(\d+)%/)[1];
-        //         $this.attr('data-toggle', 'tooltip')
-        //              .attr('data-original-title', width + '%')
-        //              .tooltip({ trigger: 'hover', placement: 'top' });
-        //     });
-        // });
+        // Fonction pour charger et afficher la modale
+        function openCampaignModal(id_campaign) {
+
+            console.log("Fonction openCampaignModal appelée avec id_campaign:", id_campaign);
+
+            // Effectue une requête AJAX pour récupérer le fragment de la modale
+            fetch(`/statistique_campaign?id_campaign=${id_campaign}`)
+                .then(response => {
+                    console.log("Réponse reçue :", response);
+                    return response.text();
+                })
+                .then(html => {
+                    console.log("HTML reçu :", html);
+
+                    // Injecte le fragment de la modale dans la page
+                    document.getElementById('modalPlaceholder').innerHTML = html;
+
+                    // Affiche la modale après avoir chargé son contenu
+                    $('#statistique_modal').modal('show');
+                })
+                .catch(error => console.error('Erreur lors du chargement des campagnes:', error));
+        }

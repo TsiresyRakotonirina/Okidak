@@ -61,9 +61,9 @@
                 
                 <div class="col-md-12" style="margin-top: 10px; align-content: center; font-weight: bold;">
                         <div class="row info-box-content" style="display: flex;">
-                            <span class="col-md-2">Name</span>
-                            <span class="col-md-2">Status</span>
-                            <span class="col-md-3">Date debut et date fin</span>
+                            <span class="col-md-1">Name</span>
+                            <span class="col-md-1">Status</span>
+                            <span class="col-md-2">Date debut et date fin</span>
                         </div>
                 </div>
 
@@ -73,8 +73,8 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fa fa-video-camera"></i></span>
                         <div class="row info-box-content" style="display: flex;">
-                            <span class="info-box-text col-md-2" style="text-transform: none;" th:text="${campaign.name}"></span>
-                            <span class="info-box-number col-md-2" th:text="${campaign.status}"></span>
+                            <span class="info-box-text col-md-1" style="text-transform: none;" th:text="${campaign.name}"></span>
+                            <span class="info-box-number col-md-1" th:text="${campaign.status}"></span>
                             <span class="info-box-text col-md-2" style="text-transform: none;" th:text="${#temporals.format(campaign.date_debut, 'dd/MM/yyyy HH:mm')} + ' - ' + ${#temporals.format(campaign.date_fin, 'dd/MM/yyyy HH:mm')}"></span>
 
                             <span class="info-box-text col-md-4" style="text-transform: none;">
@@ -89,22 +89,33 @@
                                 </div>
                             </span>
 
+                            <span class="info-box-text col-md-4" style="text-transform: none;" >
 
-                            <span class="info-box-text col-md-1" style="text-transform: none;" > <a th:href="@{/liste_campaign_periode(id_campaign=${campaign.id})}" class="btn btn-primary">Voir les periodes</a> </span>
-                            
-                            <span class="info-box-text col-md-1" style="text-transform: none;" > 
-                                <button type="button" class="btn btn-primary" 
-                                        th:data-type_campaign="${campaign.type.name}" 
-                                        th:data-url_video="${campaign.campaign_video.urlVideo}"
-                                        th:data-logo_begin="${campaign.campaign_video.logo_begin}"
-                                        th:data-logo_end="${campaign.campaign_video.logo_end}"
-                                        th:data-carousel_images="${campaign.carouselJson}"
-                                        th:data-campaign_id="${campaign.id}"
-                                        th:data-campaign_video_id="${campaign.campaign_video.id_campaign_video}"
-                                        
-                                        data-toggle="modal" data-target="#exampleModalCenter">
-                                    Video / Carousel
-                                </button>
+                                <span class="col-md-4"> 
+                                    <a th:href="@{/liste_campaign_periode(id_campaign=${campaign.id})}" class="btn btn-primary">Voir les periodes</a> 
+                                </span>
+                                
+                                <span class="col-md-4"> 
+                                    <button type="button" class="btn btn-primary" 
+                                            th:data-type_campaign="${campaign.type.name}" 
+                                            th:data-url_video="${campaign.campaign_video.urlVideo}"
+                                            th:data-logo_begin="${campaign.campaign_video.logo_begin}"
+                                            th:data-logo_end="${campaign.campaign_video.logo_end}"
+                                            th:data-carousel_images="${campaign.carouselJson}"
+                                            th:data-campaign_id="${campaign.id}"
+                                            th:data-campaign_video_id="${campaign.campaign_video.id_campaign_video}"
+                                            
+                                            data-toggle="modal" data-target="#exampleModalCenter">
+                                        Video / Carousel
+                                    </button>
+                                </span>
+
+                                <span class="col-md-4"> 
+                                    <button type="button" th:attr="onclick='openCampaignModal(' + ${campaign.id} + ')'"  class="btn btn-primary">
+                                        Statistique
+                                    </button>
+                                </span>
+
                             </span>
                         </div>
                     </div>
@@ -158,6 +169,15 @@
                         </div>
                     </div>
                 </div>
+
+                
+                <!-- Conteneur pour la modale -->
+                <div id="modalPlaceholder"></div>
+
+                <div th:fragment="statistique_modal">
+                    <!-- Contenu de la modale -->
+                </div>
+
 
             </section>
         <!-- /.content -->

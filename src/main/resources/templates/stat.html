@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Fragments</title>
+</head>
+<body>
+<div th:fragment="statistique_modal">
+
+    <div class="modal fade" id="statistique_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Détails de la campagne</h4>
+                </div>
+                <div class="modal-body" id="modalContent" style="text-align: center;">
+                    <p><strong>Campaign : </strong><span th:text="${statistique.idCampaign}"></span></p>
+                    <p><strong>Campaign_video : </strong><span th:text="${statistique.idCampaignVideo}"></span></p>
+                    <p><strong>Impression : </strong><span th:text="${statistique.nbImpression}"></span></p>
+                    <p><strong>Lancement : </strong><span th:text="${statistique.nbLancement}"></span></p>
+                    <p><strong>Vue : </strong><span th:text="${statistique.nbVue}"></span></p>
+                    <p><strong>Skip : </strong><span th:text="${statistique.nbSkipVideo}"></span></p>
+                    <p><strong>Quart de lecture : </strong><span th:text="${statistique.nbQuartLecture}"></span></p>
+                    <p><strong>Demi lecture : </strong><span th:text="${statistique.nbDemiLecture}"></span></p>
+                    <p><strong>Trois quart de lecture : </strong><span th:text="${statistique.nbTroisquartLecture}"></span></p>
+                    <p><strong>Fin lecture : </strong><span th:text="${statistique.nbFinLecture}"></span></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

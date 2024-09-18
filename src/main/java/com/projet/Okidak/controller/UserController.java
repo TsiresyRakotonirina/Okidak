@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.projet.Okidak.dto.CampaignDto;
+import com.projet.Okidak.entity.Stat_video;
 import com.projet.Okidak.dto.UserDto;
 import com.projet.Okidak.entity.Annonceur;
 import com.projet.Okidak.entity.Campaign;
@@ -178,6 +179,19 @@ public class UserController {
         model.addAttribute("user", userDto);
         model.addAttribute("campaign_periodes", campaign_periodes);
         return "liste_campaign_periode";
+    }
+
+
+    @GetMapping("/statistique_campaign")
+    public String statcamp(@RequestParam("id_campaign") Long idCampaign, Model model, Principal principal){
+        String emailUser = principal.getName();
+        User utilisateur = userService.findUserByEmail(emailUser);
+        UserDto userDto = userService.findUserDtoByEmail(emailUser);
+        Stat_video statistique = campaignService.findStat_videoByIdCampaign(idCampaign);
+        model.addAttribute("nameUser", utilisateur);
+        model.addAttribute("user", userDto);
+        model.addAttribute("statistique", statistique);
+        return "stat :: statistique_modal";
     }
 
     

@@ -21,6 +21,5 @@ public interface UserService {
     void saveAnnonceur(Annonceur annonceur);
 
     List<Annonceur> findAllAnnonceurs();
-
     
 }
