@@ -66,7 +66,7 @@ CREATE TABLE campaigns(
     budget DECIMAL,
     vue_max BIGINT,
     skip boolean,
-    temps_skip BIGINT?
+    temps_skip BIGINT,
     id_type_campaign INT NOT NULL REFERENCES type_campaign(id_type_campaign),
     id_campaign_video BIGINT NOT NULL REFERENCES campaign_video(id_campaign_video),
     id_annonceur BIGINT NOT NULL REFERENCES annonceurs(id_annonceur)
@@ -115,7 +115,7 @@ CREATE TABLE transaction_event(
 -- -- VIEW 
 -- CREATE OR REPLACE VIEW statistique_video AS
 -- SELECT 
---     md5(id_campaign::text || '-' || id_campaign_video::text) AS id_stat_unique,
+--     md5(id_campaign::text || '-' || id_campaign_video::text || '-' || DATE(date_trans)::text) AS id_stat_unique,
 --     DATE(date_trans) AS date,
 --     id_campaign, 
 --     id_campaign_video, 

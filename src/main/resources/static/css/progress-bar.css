@@ -3,11 +3,11 @@
     margin-bottom: 20px;
     background-color: #f5f5f5;
     border-radius: 5px !important;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1) !important;
     position: relative;
 }
 
-.progress-bar-blue {
+/* .progress-bar-blue {
     background-color: #007bff !important;
     line-height: 40px;
     color: #fff;
@@ -24,6 +24,21 @@
     bottom: 0;
     width: 2px;
     background-color: red;
+} */
+
+
+.progress-bar-blue {
+    background-color: transparent !important; /* Rendre la barre transparente */
+    position: relative;
+}
+
+.progress-indicator {
+    position: absolute;
+    left: 0; /* Positionner l'indicateur au début */
+    top: 0;
+    bottom: 0;
+    width: 2px; /* Largeur du trait */
+    background-color: red; /* Couleur du trait */
 }
 
 
