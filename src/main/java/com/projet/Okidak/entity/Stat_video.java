@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -18,6 +20,9 @@ public class Stat_video{
     @Id
     @Column(name = "id_stat_unique")
     private String idStatUnique;
+
+    @Column(name = "date")
+    private LocalDate date;
 
     @Column(name = "id_campaign")
     private Long idCampaign;

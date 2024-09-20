@@ -112,31 +112,11 @@ CREATE TABLE transaction_event(
 
 
 
--- date_trans,id_campaign,id_campaign_video,impression,lancement,vue,skip_video,quart_lecture,demi_lecture,troisquart_lecture,fin_lecture
-
-
--- VIEW 
--- CREATE OR REPLACE VIEW statistique_video AS
--- SELECT id_campaign, 
---        id_campaign_video, 
---        SUM(impression) AS nb_impression, 
---        SUM(lancement) AS nb_lancement, 
---        SUM(vue) AS nb_vue, 
---        SUM(skip_video) AS nb_skip_video, 
---        SUM(quart_lecture) AS nb_quart_lecture, 
---        SUM(demi_lecture) AS nb_demi_lecture, 
---        SUM(troisquart_lecture) AS nb_troisquart_lecture, 
---        SUM(fin_lecture) AS nb_fin_lecture
--- FROM 
---        transaction_event
--- GROUP BY 
---         id_campaign,
---         id_campaign_video;
-
-
+-- -- VIEW 
 -- CREATE OR REPLACE VIEW statistique_video AS
 -- SELECT 
 --     md5(id_campaign::text || '-' || id_campaign_video::text) AS id_stat_unique,
+--     DATE(date_trans) AS date,
 --     id_campaign, 
 --     id_campaign_video, 
 --     SUM(impression) AS nb_impression, 
@@ -150,50 +130,15 @@ CREATE TABLE transaction_event(
 -- FROM 
 --     transaction_event
 -- GROUP BY 
+--     DATE(date_trans),
 --     id_campaign,
---     id_campaign_video;
+--     id_campaign_video
+-- ORDER BY 
+--     DATE(date_trans);
+
+-- date_trans,id_campaign,id_campaign_video,impression,lancement,vue,skip_video,quart_lecture,demi_lecture,troisquart_lecture,fin_lecture
 
 
-
-
--- CREATE TABLE campaigns(
---     id BIGSERIAL PRIMARY KEY,
---     name VARCHAR(255),
---     status INT DEFAULT 0,
---     datePublication DATE,
---     id_type_campaign INT NOT NULL REFERENCES type_campaign(id_type_campaign),
---     id_annonceur INT NOT NULL REFERENCES annonceurs(id_annonceur)
--- ); 
-
--- ALTER TABLE campaigns
---     ADD COLUMN date_modification TIMESTAMP,
---     ADD COLUMN date_debut TIMESTAMP,
---     ADD COLUMN date_fin TIMESTAMP,
---     ADD COLUMN budget DECIMAL,
---     ADD COLUMN vue_max BIGINT,
---     ADD COLUMN id_campaign_video INT NOT NULL REFERENCES campaign_video(id_campaign_video);
-
--- ALTER TABLE campaigns RENAME COLUMN datePublication TO date_creation;
--- ALTER TABLE campaigns ALTER COLUMN date_creation TYPE TIMESTAMP USING date_creation::TIMESTAMP;
-
--- ALTER TABLE campaigns ADD CONSTRAINT name_unique UNIQUE(name);
-
-
--- CREATE TABLE campaign_video(
---     id_campaign_video BIGSERIAL PRIMARY KEY,
---     name VARCHAR(255),
---     urlVideo TEXT,
---     logo_begin BYTEA,
---     logo_end BYTEA,
---     description TEXT
--- );
--- ALTER TABLE campaign_video
--- ALTER COLUMN logo_begin TYPE VARCHAR(255) USING logo_begin::VARCHAR(255),
--- ALTER COLUMN logo_end TYPE VARCHAR(255) USING logo_end::VARCHAR(255);
-
--- ALTER TABLE campaign_video
--- ALTER COLUMN logo_begin SET NOT NULL,
--- ALTER COLUMN logo_end SET NOT NULL;
 
 
 

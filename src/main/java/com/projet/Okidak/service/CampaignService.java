@@ -20,7 +20,7 @@ public interface CampaignService {
 
     public void saveTrans(Transaction data);
 
-    public Stat_video findStat_videoByIdCampaign(Long id_campaign);
+    public List<Stat_video> findStat_videoByIdCampaign(Long id_campaign);
 
     public void updateCampaignStatus(Long id_campaign, int newStatus);
 }

@@ -187,7 +187,7 @@ public class UserController {
         String emailUser = principal.getName();
         User utilisateur = userService.findUserByEmail(emailUser);
         UserDto userDto = userService.findUserDtoByEmail(emailUser);
-        Stat_video statistique = campaignService.findStat_videoByIdCampaign(idCampaign);
+        List<Stat_video> statistique = campaignService.findStat_videoByIdCampaign(idCampaign);
         model.addAttribute("nameUser", utilisateur);
         model.addAttribute("user", userDto);
         model.addAttribute("statistique", statistique);

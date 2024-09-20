@@ -369,7 +369,7 @@ public class CampaignServiceImpl implements CampaignService{
     }
 
     @Override
-    public Stat_video findStat_videoByIdCampaign(Long id_campaign){
+    public List<Stat_video> findStat_videoByIdCampaign(Long id_campaign){
         return stat_videoRepository.findByIdCampaign(id_campaign);
     }
 
