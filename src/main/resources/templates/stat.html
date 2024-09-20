@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Fragments</title>
+    <!-- <style>
+        .modal-dialog {
+            max-width: 90%;
+        }
+        .modal-body {
+            overflow-x: auto;
+            background-color: black;
+        }
+    </style> -->
+</head>
+<body>
+<div th:fragment="statistique_modal">
+
+    <div class="modal fade" id="statistique_modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Détails de la campagne</h4>
+                </div>
+                <div class="modal-body" id="modalContent" style="text-align: center;">
+
+                    <div class="table-responsive">
+
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>ID Campaign</th>
+                                    <th>ID Campaign Video</th>
+                                    <th>Impressions</th>
+                                    <th>Lancements</th>
+                                    <th>Vues</th>
+                                    <th>Skips</th>
+                                    <th>Quart Lecture</th>
+                                    <th>Demi Lecture</th>
+                                    <th>Trois Quart Lecture</th>
+                                    <th>Fin Lecture</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="stat : ${statistique}">
+                                    <td th:text="${stat.date}"></td>
+                                    <td th:text="${stat.idCampaign}"></td>
+                                    <td th:text="${stat.idCampaignVideo}"></td>
+                                    <td th:text="${stat.nbImpression}"></td>
+                                    <td th:text="${stat.nbLancement}"></td>
+                                    <td th:text="${stat.nbVue}"></td>
+                                    <td th:text="${stat.nbSkipVideo}"></td>
+                                    <td th:text="${stat.nbQuartLecture}"></td>
+                                    <td th:text="${stat.nbDemiLecture}"></td>
+                                    <td th:text="${stat.nbTroisquartLecture}"></td>
+                                    <td th:text="${stat.nbFinLecture}"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>

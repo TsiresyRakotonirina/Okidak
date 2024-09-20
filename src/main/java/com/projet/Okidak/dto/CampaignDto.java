@@ -31,10 +31,8 @@ public class CampaignDto {
     @NotEmpty
     private int status;
 
-    @NotEmpty
     private LocalDateTime date_creation;
 
-    @NotEmpty
     private LocalDateTime date_modification;
 
     @NotEmpty
@@ -80,5 +78,9 @@ public class CampaignDto {
 
     @NotEmpty
     private String description;
+
+    // private boolean skip = false; 
+
+    // private Long time_skip = null; 
 
 }

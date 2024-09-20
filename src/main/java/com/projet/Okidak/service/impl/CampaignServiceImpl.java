@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.projet.Okidak.dto.CampaignDto;
-// import com.projet.Okidak.dto.StatDto;
+import com.projet.Okidak.entity.Stat_video;
 import com.projet.Okidak.entity.Campaign;
 import com.projet.Okidak.entity.Campaign_carousel;
 import com.projet.Okidak.entity.Campaign_periode;
@@ -30,6 +30,7 @@ import com.projet.Okidak.repository.CampaignRepository;
 import com.projet.Okidak.repository.Campaign_carouselRepository;
 import com.projet.Okidak.repository.Campaign_periodeRepository;
 import com.projet.Okidak.repository.Campaign_videoRepository;
+import com.projet.Okidak.repository.Stat_videoRepository;
 import com.projet.Okidak.repository.TransactionRepository;
 import com.projet.Okidak.service.CampaignService;
 
@@ -46,17 +47,20 @@ public class CampaignServiceImpl implements CampaignService{
     private Campaign_periodeRepository campaign_periodeRepository; 
     private Campaign_carouselRepository campaign_carouselRepository;
     private TransactionRepository transactionRepository;
+    private Stat_videoRepository stat_videoRepository;
 
     public CampaignServiceImpl(CampaignRepository campaignRepository, 
                                Campaign_videoRepository campaign_videoRepository, 
                                Campaign_periodeRepository campaign_periodeRepository, 
                                Campaign_carouselRepository campaign_carouselRepository, 
-                               TransactionRepository transactionRepository){
+                               TransactionRepository transactionRepository,
+                               Stat_videoRepository stat_videoRepository){
         this.campaignRepository = campaignRepository;
         this.campaign_videoRepository = campaign_videoRepository;
         this.campaign_periodeRepository = campaign_periodeRepository;
         this.campaign_carouselRepository = campaign_carouselRepository;
         this.transactionRepository = transactionRepository;
+        this.stat_videoRepository = stat_videoRepository;
     }
 
     @Override 
@@ -156,7 +160,7 @@ public class CampaignServiceImpl implements CampaignService{
 
     }
 
-
+    // ajout campaign dto vers base
     @Override
     public void saveCampaign(CampaignDto campaignDto) throws Exception{
 
@@ -165,14 +169,24 @@ public class CampaignServiceImpl implements CampaignService{
 
         campaign.setName(campaignDto.getName());
         campaign.setStatus(campaignDto.getStatus());
-        campaign.setDate_creation(campaignDto.getDate_creation());
-        campaign.setDate_modification(campaignDto.getDate_modification());
         campaign.setDate_debut(campaignDto.getDate_debut());
         campaign.setDate_fin(campaignDto.getDate_fin());
         campaign.setBudget(campaignDto.getBudget());
         campaign.setVue_max(campaignDto.getVue_max());
         campaign.setType(campaignDto.getType()); // ilaina amn url anle video 
         campaign.setAnnonceur(campaignDto.getAnnonceur());
+        
+        if (campaignDto.getDate_creation() == null) {
+            campaignDto.setDate_creation(LocalDateTime.now().withNano(0));
+        }
+
+        if (campaignDto.getDate_modification() == null) {
+            campaignDto.setDate_modification(LocalDateTime.now().withNano(0));
+        }
+        
+        
+        campaign.setDate_creation(campaignDto.getDate_creation());
+        campaign.setDate_modification(campaignDto.getDate_modification());
         
 
         // CAMPAIGN VIDEO 
@@ -255,8 +269,9 @@ public class CampaignServiceImpl implements CampaignService{
     // // calcule view par periode
     private Long objectif_vue_periode(Campaign campaign){
         Long vue_objectif = campaign.getVue_max();
-        Long nombre_periode = Long.valueOf(calcule_periode(campaign));
-        return vue_objectif / nombre_periode;
+        // Long nombre_periode = Long.valueOf(calcule_periode(campaign));
+        return vue_objectif;
+        // return vue_objectif / nombre_periode;
     }
 
     
@@ -302,7 +317,7 @@ public class CampaignServiceImpl implements CampaignService{
             List<Campaign_periode> campaignPeriodes = new ArrayList<>();
             for (int periode = 0; periode < dates_periode.size(); periode++) {
                 Campaign_periode campaign_periode = new Campaign_periode();
-                campaign_periode.setOrdre((long)periode);
+                campaign_periode.setOrdre((long)periode + 1);
                 campaign_periode.setStart_date(dates_periode.get(periode).getStart());
                 campaign_periode.setEnd_date(dates_periode.get(periode).getEnd());
                 campaign_periode.setBudget_periode(budget_periode);
@@ -348,11 +363,25 @@ public class CampaignServiceImpl implements CampaignService{
 
     // TRAITEMENT TRANSACTION STAT
 
+    @Override
     public void saveTrans(Transaction data){
         transactionRepository.save(data);
     }
 
+    @Override
+    public List<Stat_video> findStat_videoByIdCampaign(Long id_campaign){
+        return stat_videoRepository.findByIdCampaign(id_campaign);
+    }
 
-   
+
+    @Transactional
+    @Override
+    public void updateCampaignStatus(Long id_campaign, int newStatus){
+        Campaign campaign = campaignRepository.findById(id_campaign)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid campaign ID"));
+        campaign.setStatus(newStatus);
+        campaignRepository.save(campaign);
+    }
+
 
 }

@@ -21,6 +21,9 @@ public class Transaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private LocalDateTime date_trans;
+
     @NotNull
     @Column
     private Long id_campaign;
@@ -29,31 +32,29 @@ public class Transaction {
     @Column
     private Long id_campaign_video;
 
-    @Column
-    private LocalDateTime date_trans;
     
     @Column
-    private Boolean impression;
+    private Integer impression;
 
     @Column
-    private Boolean lancement;
+    private Integer lancement;
     
     @Column
-    private Boolean vue;
+    private Integer vue;
     
     @Column
-    private Boolean skip_video;
+    private Integer skip_video;
     
     @Column
-    private Boolean quart_lecture;
+    private Integer quart_lecture;
     
     @Column
-    private Boolean demi_lecture;
+    private Integer demi_lecture;
     
     @Column
-    private Boolean troisquart_lecture;
+    private Integer troisquart_lecture;
     
     @Column
-    private Boolean fin_lecture;
+    private Integer fin_lecture;
 
 }

@@ -27,6 +27,8 @@
 
     <!-- css hipetrahanle video  -->
     <link rel="stylesheet" href="/css/modal.css">
+    <link rel="stylesheet" href="/css/progress-bar.css">
+    
 
 
 <body>
@@ -59,9 +61,9 @@
                 
                 <div class="col-md-12" style="margin-top: 10px; align-content: center; font-weight: bold;">
                         <div class="row info-box-content" style="display: flex;">
-                            <span class="col-md-2">Name</span>
-                            <span class="col-md-2">Status</span>
-                            <span class="col-md-3">Date debut et date fin</span>
+                            <span class="col-md-1">Name</span>
+                            <span class="col-md-1">Status</span>
+                            <span class="col-md-2">Date debut et date fin</span>
                         </div>
                 </div>
 
@@ -71,26 +73,67 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-info"><i class="fa fa-video-camera"></i></span>
                         <div class="row info-box-content" style="display: flex;">
-                            <span class="info-box-text col-md-2" style="text-transform: none;" th:text="${campaign.name}"></span>
-                            <span class="info-box-number col-md-2" th:text="${campaign.status}"></span>
+                            <span class="info-box-text col-md-1" style="text-transform: none;" th:text="${campaign.name}"></span>
+                            <span class="info-box-number col-md-1" > <!-- th:text="${campaign.status}" --> 
+                                <label class="switch">
+                                    <input type="checkbox" th:checked="${campaign.status == 1}"
+                                                           th:data-campaign-id="${campaign.id}" 
+                                                           class="campaign-status-checkbox">
+                                    <span class="slider round"></span>
+                                </label>
+                            </span>
                             <span class="info-box-text col-md-2" style="text-transform: none;" th:text="${#temporals.format(campaign.date_debut, 'dd/MM/yyyy HH:mm')} + ' - ' + ${#temporals.format(campaign.date_fin, 'dd/MM/yyyy HH:mm')}"></span>
-                            <span class="info-box-text col-md-3" style="text-transform: none;" > <a th:href="@{/liste_campaign_periode(id_campaign=${campaign.id})}" class="btn btn-primary">Voir les periodes</a> </span>
-                            
-                            <span class="info-box-text col-md-3" style="text-transform: none;" > 
-                                <button type="button" class="btn btn-primary" 
-                                        th:data-type_campaign="${campaign.type.name}" 
-                                        th:data-url_video="${campaign.campaign_video.urlVideo}"
-                                        th:data-logo_begin="${campaign.campaign_video.logo_begin}"
-                                        th:data-logo_end="${campaign.campaign_video.logo_end}"
-                                        th:data-carousel_images="${campaign.carouselJson}"
 
-                                        
-                                        data-toggle="modal" data-target="#exampleModalCenter">
-                                    Video / Carousel
-                                </button>
+                            <span class="info-box-text col-md-4" style="text-transform: none;">
+                                <div class="progress">
+                                    <div th:id="'progress-bar-' + ${campaign.id}" class="progress-bar progress-bar-blue" role="progressbar" style="width: 0%;"
+                                        th:data-start="${#temporals.format(campaign.date_debut, 'dd/MM/yyyy HH:mm')}"
+                                        th:data-end="${#temporals.format(campaign.date_fin, 'dd/MM/yyyy HH:mm')}"
+                                    >
+                                        <!-- <span class="progress-bar-tooltip">0%</span> -->
+                                        <div class="progress-indicator"></div>
+                                         0%
+                                    </div>
+                                </div>
+                            </span>
+
+                            <span class="info-box-text col-md-4 d-flex justify-content-center align-items-center" style="text-transform: none;" >
+
+                                <span class="col-md-4 d-flex justify-content-center"> 
+                                    <button type="button" class="btn btn-secondary" th:onclick="'window.location.href=\'/liste_campaign_periode?id_campaign=' + ${campaign.id} + '\''">
+                                        <i class="fa fa-calendar"></i>
+                                    </button>
+                                    <!-- <a th:href="@{/liste_campaign_periode(id_campaign=${campaign.id})}" class="btn btn-secondary">
+                                        <i class="fa fa-calendar"></i>
+                                    </a>  -->
+                                </span>
+                                
+                                <span class="col-md-4 d-flex justify-content-center"> 
+                                    <button type="button" class="btn btn-secondary"
+                                            th:data-type_campaign="${campaign.type.name}" 
+                                            th:data-url_video="${campaign.campaign_video.urlVideo}"
+                                            th:data-logo_begin="${campaign.campaign_video.logo_begin}"
+                                            th:data-logo_end="${campaign.campaign_video.logo_end}"
+                                            th:data-carousel_images="${campaign.carouselJson}"
+                                            th:data-campaign_id="${campaign.id}"
+                                            th:data-campaign_video_id="${campaign.campaign_video.id_campaign_video}"
+                                            
+                                            data-toggle="modal" data-target="#exampleModalCenter">
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </button>
+                                </span>
+
+                                <span class="col-md-4 d-flex justify-content-center"> 
+                                    <button type="button" th:attr="onclick='openCampaignModal(' + ${campaign.id} + ')'"  class="btn btn-secondary">
+                                        <i class="fa fa-bar-chart"></i>
+                                    </button>
+                                </span>
+
                             </span>
                         </div>
                     </div>
+
+
                 </div>  
 
                 <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle">
@@ -109,25 +152,44 @@
                                 <!-- Conteneur de l'iframe -->
                                 <div id="player-container">
                                     <div id="player">
-                                        <!-- <div id="start-logo" style="display: none; cursor: pointer;">
-                                            <img alt="Logo début" />
-                                        </div>
-                                        <div id="end-logo" style="display: none; cursor: pointer;">
-                                            <img alt="Logo fin" />
-                                        </div> -->
+                                        
                                     </div>
                                 </div>
                                 
                             </div>
                             <div class="modal-footer" id="modal-footer">
-                                <input type="range" id="progress-bar" value="0" min="0" max="100">
-                                <span id="current-time">00:00</span> / <span id="duration">00:00</span>
-                                <button id="playButton" class="btn btn-primary"></button> 
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <div class="row">
+                                    <input type="range" id="progress-bar" value="0" min="0" max="100">
+                                </div>
+                                <div class="row">
+                                    <div class="col-xs-12 col-sm-12 col-md-12 text-right">
+                                        <span id="temps_vid">
+                                            <span id="current-time">00:00</span> / <span id="duration">00:00</span>
+                                        </span>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row">
+                                    <div class="col-xs-6 col-sm-6 col-md-6 text-left">
+                                        <div id="bouton_skip"></div>
+                                    </div>
+                                    <div class="col-xs-6 col-sm-6 col-md-6 text-right">
+                                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                
+                <!-- Conteneur pour la modale -->
+                <div id="modalPlaceholder"></div>
+
+                <div th:fragment="statistique_modal">
+                    <!-- Contenu de la modale -->
+                </div>
+
 
             </section>
         <!-- /.content -->
@@ -168,9 +230,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.11.2/moment.min.js"></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script> -->
 
-    <!-- <script src="https://www.youtube.com/iframe_api"></script> -->
 
     <!-- script pour les videos youtubes -->
     <script src="/js/modalVideo.js"></script>
