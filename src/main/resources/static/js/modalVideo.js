@@ -779,17 +779,28 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 const currentDuration = currentDate - startDate;
                 const progressPercent = (currentDuration / totalDuration) * 100;
         
+                // if (progressPercent >= 0 && progressPercent <= 100) {
+                //     progressBar.style.width = progressPercent + "%";
+                //     progressBar.innerHTML = Math.floor(progressPercent) + "%";
+                //     // progressBar.setAttribute("aria-valuenow", progressPercent);
+                // } else if (progressPercent > 100) {
+                //     progressBar.style.width = "100%";
+                //     progressBar.innerHTML = "100%";
+                // } else {
+                //     progressBar.style.width = "0%";
+                //     progressBar.innerHTML = "0%";
+                // }
+
+                const indicator = progressBar.querySelector(".progress-indicator");
                 if (progressPercent >= 0 && progressPercent <= 100) {
-                    progressBar.style.width = progressPercent + "%";
-                    progressBar.innerHTML = Math.floor(progressPercent) + "%";
-                    // progressBar.setAttribute("aria-valuenow", progressPercent);
+                    indicator.style.left = progressPercent + "%"; // Ajuster la position de l'indicateur
+                    indicator.style.height = "100%"; // S'assurer qu'il occupe toute la hauteur
                 } else if (progressPercent > 100) {
-                    progressBar.style.width = "100%";
-                    progressBar.innerHTML = "100%";
+                    indicator.style.left = "100%";
                 } else {
-                    progressBar.style.width = "0%";
-                    progressBar.innerHTML = "0%";
+                    indicator.style.left = "0%";
                 }
+
             });
         });
 

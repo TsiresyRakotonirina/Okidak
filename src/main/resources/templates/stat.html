@@ -22,9 +22,9 @@
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <h4 class="modal-title" id="myModalLabel">Détails de la campagne</h4>
+                    <h4 class="modal-title" id="myModalLabel">Details de la campagne : <span th:text="${campaign.name}"></span> </h4>
                 </div>
-                <div class="modal-body" id="modalContent" style="text-align: center;">
+                <div class="modal-body" id="modalContent" style="text-align: center; overflow-y: auto; ">
 
                     <div class="table-responsive">
 
@@ -32,8 +32,8 @@
                             <thead>
                                 <tr>
                                     <th>Date</th>
-                                    <th>ID Campaign</th>
-                                    <th>ID Campaign Video</th>
+                                    <!-- <th>ID Campaign</th>
+                                    <th>ID Campaign Video</th> -->
                                     <th>Impressions</th>
                                     <th>Lancements</th>
                                     <th>Vues</th>
@@ -47,8 +47,8 @@
                             <tbody>
                                 <tr th:each="stat : ${statistique}">
                                     <td th:text="${stat.date}"></td>
-                                    <td th:text="${stat.idCampaign}"></td>
-                                    <td th:text="${stat.idCampaignVideo}"></td>
+                                    <!-- <td th:text="${stat.idCampaign}"></td>
+                                    <td th:text="${stat.idCampaignVideo}"></td> -->
                                     <td th:text="${stat.nbImpression}"></td>
                                     <td th:text="${stat.nbLancement}"></td>
                                     <td th:text="${stat.nbVue}"></td>
@@ -59,6 +59,13 @@
                                     <td th:text="${stat.nbFinLecture}"></td>
                                 </tr>
                             </tbody>
+                            <tfoot>
+                                <tr>
+                                    <td colspan="2">Total des vues :</td>
+                                    <td th:text="${totalNbVue}"></td>
+                                </tr>
+                            </tfoot>
+                            
                         </table>
 
                     </div>

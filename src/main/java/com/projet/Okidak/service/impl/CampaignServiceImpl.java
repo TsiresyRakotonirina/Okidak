@@ -7,7 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 import java.util.List;
-    
+import java.util.Optional;
 import java.util.ArrayList;
 import java.time.LocalDateTime;
 import java.time.Duration;
@@ -66,6 +66,11 @@ public class CampaignServiceImpl implements CampaignService{
     @Override 
     public Campaign findCampaignByName(String name){
         return campaignRepository.findByName(name);
+    }
+
+    @Override 
+    public Optional<Campaign> findCampaignById(Long id){
+        return campaignRepository.findById(id);
     }
 
     @Override

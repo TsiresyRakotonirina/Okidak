@@ -2,6 +2,7 @@ package com.projet.Okidak.controller;
 
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -24,6 +25,8 @@ import com.projet.Okidak.entity.User;
 import com.projet.Okidak.service.AdminService;
 import com.projet.Okidak.service.CampaignService;
 import com.projet.Okidak.service.UserService;
+
+import jakarta.persistence.EntityNotFoundException;
 
 
 
@@ -188,9 +191,24 @@ public class UserController {
         User utilisateur = userService.findUserByEmail(emailUser);
         UserDto userDto = userService.findUserDtoByEmail(emailUser);
         List<Stat_video> statistique = campaignService.findStat_videoByIdCampaign(idCampaign);
+        Optional<Campaign> campaign = campaignService.findCampaignById(idCampaign);
+
+        Long totalNbVue = statistique.stream()
+                            .mapToLong(Stat_video::getNbVue)
+                            .sum();
+        model.addAttribute("totalNbVue", totalNbVue);
+
         model.addAttribute("nameUser", utilisateur);
         model.addAttribute("user", userDto);
         model.addAttribute("statistique", statistique);
+
+         if (campaign.isPresent()) {
+            model.addAttribute("campaign", campaign.get());
+        } else {
+            // Gérez le cas où la campagne n'est pas trouvée
+            throw new EntityNotFoundException("Campaign not found with id: " + idCampaign);
+        }
+
         return "stat :: statistique_modal";
     }
 

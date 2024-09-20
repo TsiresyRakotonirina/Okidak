@@ -82,7 +82,7 @@
                                     <span class="slider round"></span>
                                 </label>
                             </span>
-                            <span class="info-box-text col-md-2" style="text-transform: none;" th:text="${#temporals.format(campaign.date_debut, 'dd/MM/yyyy HH:mm')} + ' - ' + ${#temporals.format(campaign.date_fin, 'dd/MM/yyyy HH:mm')}"></span>
+                            <span class="info-box-text col-md-3" style="text-transform: none;" th:text="${#temporals.format(campaign.date_debut, 'dd/MM/yyyy HH:mm')} + ' - ' + ${#temporals.format(campaign.date_fin, 'dd/MM/yyyy HH:mm')}"></span>
 
                             <span class="info-box-text col-md-4" style="text-transform: none;">
                                 <div class="progress">
@@ -97,7 +97,7 @@
                                 </div>
                             </span>
 
-                            <span class="info-box-text col-md-4 d-flex justify-content-center align-items-center" style="text-transform: none;" >
+                            <span class="info-box-text col-md-3 d-flex justify-content-center align-items-center" style="text-transform: none;" >
 
                                 <span class="col-md-4 d-flex justify-content-center"> 
                                     <button type="button" class="btn btn-secondary" th:onclick="'window.location.href=\'/liste_campaign_periode?id_campaign=' + ${campaign.id} + '\''">
