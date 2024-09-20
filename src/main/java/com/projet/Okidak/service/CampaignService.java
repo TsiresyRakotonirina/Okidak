@@ -22,5 +22,5 @@ public interface CampaignService {
 
     public Stat_video findStat_videoByIdCampaign(Long id_campaign);
 
-
+    public void updateCampaignStatus(Long id_campaign, int newStatus);
 }

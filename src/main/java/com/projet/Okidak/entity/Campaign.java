@@ -66,8 +66,12 @@ public class Campaign {
     @ManyToOne @JoinColumn(name = "id_type_campaign", nullable = false)
     private Type_campaign type;
     
+    
     @ManyToOne @JoinColumn(name = "id_annonceur", nullable = false)
     private Annonceur annonceur;
+
+
+
 
     @OneToOne  
     @JoinColumn( name="id_campaign_video", nullable=false )
@@ -85,11 +89,5 @@ public class Campaign {
 
     @Transient
     private String carouselJson; // Champ temporaire pour stocker les données JSON
-
-
-
-
-
-
     
 }

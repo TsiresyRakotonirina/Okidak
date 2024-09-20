@@ -74,7 +74,14 @@
                         <span class="info-box-icon bg-info"><i class="fa fa-video-camera"></i></span>
                         <div class="row info-box-content" style="display: flex;">
                             <span class="info-box-text col-md-1" style="text-transform: none;" th:text="${campaign.name}"></span>
-                            <span class="info-box-number col-md-1" th:text="${campaign.status}"></span>
+                            <span class="info-box-number col-md-1" > <!-- th:text="${campaign.status}" --> 
+                                <label class="switch">
+                                    <input type="checkbox" th:checked="${campaign.status == 1}"
+                                                           th:data-campaign-id="${campaign.id}" 
+                                                           class="campaign-status-checkbox">
+                                    <span class="slider round"></span>
+                                </label>
+                            </span>
                             <span class="info-box-text col-md-2" style="text-transform: none;" th:text="${#temporals.format(campaign.date_debut, 'dd/MM/yyyy HH:mm')} + ' - ' + ${#temporals.format(campaign.date_fin, 'dd/MM/yyyy HH:mm')}"></span>
 
                             <span class="info-box-text col-md-4" style="text-transform: none;">
@@ -84,6 +91,7 @@
                                         th:data-end="${#temporals.format(campaign.date_fin, 'dd/MM/yyyy HH:mm')}"
                                     >
                                         <!-- <span class="progress-bar-tooltip">0%</span> -->
+                                        <div class="progress-indicator"></div>
                                          0%
                                     </div>
                                 </div>
@@ -96,7 +104,7 @@
                                 </span>
                                 
                                 <span class="col-md-4"> 
-                                    <button type="button" class="btn btn-primary" 
+                                    <button type="button" class="btn btn-secondary"
                                             th:data-type_campaign="${campaign.type.name}" 
                                             th:data-url_video="${campaign.campaign_video.urlVideo}"
                                             th:data-logo_begin="${campaign.campaign_video.logo_begin}"
@@ -106,13 +114,13 @@
                                             th:data-campaign_video_id="${campaign.campaign_video.id_campaign_video}"
                                             
                                             data-toggle="modal" data-target="#exampleModalCenter">
-                                        Video / Carousel
+                                            <i class="fa fa-eye" aria-hidden="true"></i>
                                     </button>
                                 </span>
 
                                 <span class="col-md-4"> 
                                     <button type="button" th:attr="onclick='openCampaignModal(' + ${campaign.id} + ')'"  class="btn btn-primary">
-                                        Statistique
+                                        <i class="fa fa-anchor"></i>
                                     </button>
                                 </span>
 
@@ -153,7 +161,6 @@
                                         <span id="temps_vid">
                                             <span id="current-time">00:00</span> / <span id="duration">00:00</span>
                                         </span>
-                                        <button id="playButton" class="btn btn-primary">Play/Pause</button> 
                                     </div>
                                 </div>
                                 <br>

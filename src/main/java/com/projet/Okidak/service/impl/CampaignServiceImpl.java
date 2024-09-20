@@ -160,7 +160,7 @@ public class CampaignServiceImpl implements CampaignService{
 
     }
 
-
+    // ajout campaign dto vers base
     @Override
     public void saveCampaign(CampaignDto campaignDto) throws Exception{
 
@@ -169,14 +169,24 @@ public class CampaignServiceImpl implements CampaignService{
 
         campaign.setName(campaignDto.getName());
         campaign.setStatus(campaignDto.getStatus());
-        campaign.setDate_creation(campaignDto.getDate_creation());
-        campaign.setDate_modification(campaignDto.getDate_modification());
         campaign.setDate_debut(campaignDto.getDate_debut());
         campaign.setDate_fin(campaignDto.getDate_fin());
         campaign.setBudget(campaignDto.getBudget());
         campaign.setVue_max(campaignDto.getVue_max());
         campaign.setType(campaignDto.getType()); // ilaina amn url anle video 
         campaign.setAnnonceur(campaignDto.getAnnonceur());
+        
+        if (campaignDto.getDate_creation() == null) {
+            campaignDto.setDate_creation(LocalDateTime.now().withNano(0));
+        }
+
+        if (campaignDto.getDate_modification() == null) {
+            campaignDto.setDate_modification(LocalDateTime.now().withNano(0));
+        }
+        
+        
+        campaign.setDate_creation(campaignDto.getDate_creation());
+        campaign.setDate_modification(campaignDto.getDate_modification());
         
 
         // CAMPAIGN VIDEO 
@@ -259,8 +269,9 @@ public class CampaignServiceImpl implements CampaignService{
     // // calcule view par periode
     private Long objectif_vue_periode(Campaign campaign){
         Long vue_objectif = campaign.getVue_max();
-        Long nombre_periode = Long.valueOf(calcule_periode(campaign));
-        return vue_objectif / nombre_periode;
+        // Long nombre_periode = Long.valueOf(calcule_periode(campaign));
+        return vue_objectif;
+        // return vue_objectif / nombre_periode;
     }
 
     
@@ -363,6 +374,14 @@ public class CampaignServiceImpl implements CampaignService{
     }
 
 
-   
+    @Transactional
+    @Override
+    public void updateCampaignStatus(Long id_campaign, int newStatus){
+        Campaign campaign = campaignRepository.findById(id_campaign)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid campaign ID"));
+        campaign.setStatus(newStatus);
+        campaignRepository.save(campaign);
+    }
+
 
 }

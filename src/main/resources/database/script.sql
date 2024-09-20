@@ -65,6 +65,8 @@ CREATE TABLE campaigns(
     date_fin TIMESTAMP,
     budget DECIMAL,
     vue_max BIGINT,
+    skip boolean,
+    temps_skip BIGINT?
     id_type_campaign INT NOT NULL REFERENCES type_campaign(id_type_campaign),
     id_campaign_video BIGINT NOT NULL REFERENCES campaign_video(id_campaign_video),
     id_annonceur BIGINT NOT NULL REFERENCES annonceurs(id_annonceur)

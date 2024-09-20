@@ -1,3 +1,6 @@
+// let status = true;
+
+
 // Charger l'API YouTube uniquement si elle n'est pas déjà chargée
 if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
     var tag = document.createElement('script');
@@ -91,36 +94,12 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
         // Fonction appelée lorsque le lecteur est prêt
         function onPlayerReady(event) {
-            var playButton = $('#playButton');
             console.log("Le lecteur est prêt");
             event.target.playVideo(); 
             bouton_skip();
             document.getElementById('progress-bar').addEventListener('input', seekVideo);
 
-            updatePlayButtonText();
             updateDuration();
-
-            playButton.on('click', function() {
-                if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
-                    player.pauseVideo(); 
-                } else if (player) {
-                    player.playVideo(); 
-                }
-
-                updatePlayButtonText();
-            });
-
-            player.addEventListener('onStateChange', function(event) {
-                updatePlayButtonText();
-            });
-
-            function updatePlayButtonText() {
-                if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
-                    playButton.text('Pause'); 
-                } else {
-                    playButton.text('Play'); 
-                }
-            }
         }
 
         function onPlayerStateChange(event, logo_end) {
@@ -444,19 +423,19 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                     video.currentTime = time;
                 });
 
-                // Contrôles Play/Pause
-                var playPauseButton = document.getElementById('playButton');
+                // // Contrôles Play/Pause
+                // var playPauseButton = document.getElementById('playButton');
 
-                // Ajoute un écouteur d'événements pour le bouton
-                playPauseButton.addEventListener('click', function() {
-                    if (video.paused) {
-                        video.play();
-                        playPauseButton.textContent = 'Pause';
-                    } else {
-                        video.pause();
-                        playPauseButton.textContent = 'Play';
-                    }
-                });
+                // // Ajoute un écouteur d'événements pour le bouton
+                // playPauseButton.addEventListener('click', function() {
+                //     if (video.paused) {
+                //         video.play();
+                //         playPauseButton.textContent = 'Pause';
+                //     } else {
+                //         video.pause();
+                //         playPauseButton.textContent = 'Play';
+                //     }
+                // });
                 
             } else if (campaign_type == "Youtube"){
 
@@ -609,68 +588,36 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 console.log("nombre de carrousel : " + $('#my_carousel').length);
 
 
-                setTimeout(function() {
-                    if ($('#my_carousel').length) {
-                        $('#my_carousel').carousel({
-                            interval: 3000,  
-                            pause: false     
-                        });
-                        $('#my_carousel').carousel('cycle');
-                    }
-                }, 100);
+                if ($('#my_carousel').length) {
+                    $('#my_carousel').carousel({
+                        interval: 5000,  
+                        pause: false     
+                    });
+                    $('#my_carousel').carousel('cycle');
+                }
 
                 console.log("Total image carrousel : " + totalImages);
+
 
                 if ($('#my_carousel').length) {
                     $('#my_carousel').on('slid.bs.carousel', function (event) {
                         currentSlide = $(event.relatedTarget).index();
                         console.log('Diapositive actuelle:', currentSlide);
+                        
                         checkCycleStage(totalImages);
+            
 
                         if (currentSlide === totalImages - 1) {
                             
-
-                            // // Supprimer les événements du carrousel
-                            // console.log('Suppression des événements du carrousel');
-                            // $('#my_carousel').off('slid.bs.carousel');
                             
-                            // // Désactiver le carrousel
-                            // $('#my_carousel').carousel('pause');
-                            // $('#my_carousel').carousel('dispose');
+                            setTimeout(function(){$('#my_carousel').carousel({
+                                interval: false
+                            });}, 5000);
 
-                            // // Supprimer l'élément du DOM
-                            // $('#my_carousel').remove();
+                            $('#my_carousel').remove();
 
-                            // // Vérification après un délai si l'élément est bien supprimé
-                            // setTimeout(function() {
-                            //     if (!$('#my_carousel').length) {
-                            //         console.log('Carrousel correctement désactivé et supprimé.');
-                            //     } else {
-                            //         console.log('Le carrousel semble toujours actif.');
-                            //     }
-                            // }, 100);
-                            // Vérifie si le carrousel existe avant de procéder
-
-                            ///
-
-                            // if ($('#my_carousel').length) {
-                                
-                                // Supprimer l'écouteur d'événement avant de désactiver le carrousel
-                                $('#my_carousel').off('slid.bs.carousel');
-                                
-                                // Désactiver le carrousel avec Bootstrap
-                                $('#my_carousel').carousel('dispose'); 
-                                
-                                $('#my_carousel').remove();
-
-                                console.log('Carrousel arrêté et écouteur supprimé');
-                            // }
+                            setTimeout(logoFin(logo_end),5000);
                             
-                            var playerDiv = document.getElementById('player');
-                            playerDiv.innerHTML = ''; 
-                            
-                            logoFin(logo_end);
-
 
                         }
                     });
@@ -745,6 +692,12 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                         transmettreEvent();
                         fin_lecture = 0;
                     }
+
+                    quarterReached = false;
+                    halfReached = false;
+                    threeQuarterReached = false;
+                    endReached = false;
+
                 }
 
 
@@ -805,6 +758,11 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
 
 
 
+
+        // PROGRESS BAR
+
+
+
         document.addEventListener("DOMContentLoaded", function() {
             
             const progressBars = document.querySelectorAll(".progress-bar");
@@ -850,6 +808,9 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
         }
 
 
+        // STATISTIQUE CAMPAIGN
+
+
         // Fonction pour charger et afficher la modale
         function openCampaignModal(id_campaign) {
 
@@ -871,4 +832,38 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                     $('#statistique_modal').modal('show');
                 })
                 .catch(error => console.error('Erreur lors du chargement des campagnes:', error));
+
         }
+
+
+        // STATUS CAMPAIGN
+
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.campaign-status-checkbox').forEach(function (checkbox) {
+                checkbox.addEventListener('change', function () {
+                    const campaignId = this.getAttribute('data-campaign-id');
+                    const newStatus = this.checked ? 1 : 0;
+        
+                    // Envoi de la requête AJAX
+                    fetch(`/api/campaign/updateStatus`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            // 'X-CSRF-TOKEN': document.querySelector('meta[name="_csrf"]').getAttribute('content') // CSRF token
+                        },
+                        body: JSON.stringify({
+                            id: campaignId,
+                            status: newStatus
+                        })
+                    }).then(response => {
+                        if (response.ok) {
+                            console.log('Status updated successfully');
+                        } else {
+                            console.error('Failed to update status');
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                    });
+                });
+            });
+        });
