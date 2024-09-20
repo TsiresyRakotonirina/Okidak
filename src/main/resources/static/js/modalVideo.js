@@ -178,10 +178,6 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             // Ajouter l'image au div
             startLogoDiv.appendChild(startLogoImg);
 
-            // startLogoImg.addEventListener('click', function() {
-            //     affichage(button, campaign_type, videoUrl);
-            // });
-
             if (player && typeof player.stopVideo === 'function') {
                 player.stopVideo(); 
                 player.destroy(); // Détruire le lecteur YouTube
@@ -190,7 +186,6 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
             }
 
             // Arrêter la vidéo HTML5 si elle existe
-            // var videoElement = document.querySelector('#player');
             var videoElement = document.getElementById('video');
             if (videoElement) {
                 videoElement.pause();
@@ -399,12 +394,15 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 video.addEventListener('timeupdate', function() {
                     var value = (100 / video.duration) * video.currentTime;
                     progressBar.value = value;
-
-                    
-                   
+     
                     var currentTime = video.currentTime;
                     var duration = video.duration; 
                     checkVideoMilestones(currentTime, duration, localMilestones);
+
+                    document.getElementById('current-time').textContent = formatTime(currentTime);
+                    document.getElementById('duration').textContent = formatTime(duration);
+
+
                 
                 });
 
@@ -445,7 +443,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                 var video_Id = extractVideoId(videoUrl);
 
                 console.log(player);
-                console.log("mandalo else");
+                console.log("type youtube");
 
 
 
@@ -471,7 +469,7 @@ if (typeof YT === 'undefined' || typeof YT.Player === 'undefined') {
                         events: {
                             'onReady': onPlayerReady,
                             'onError': function(event) {
-                                console.error("Erreur dans le lecteur:", event.data);
+                                console.error("Erreur dans le lecteur ou url qui n'existe pas:", event.data);
                             },
                             'onStateChange': function(event) {
                                 onPlayerStateChange(event, logo_end);

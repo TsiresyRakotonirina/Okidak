@@ -97,13 +97,18 @@
                                 </div>
                             </span>
 
-                            <span class="info-box-text col-md-4" style="text-transform: none;" >
+                            <span class="info-box-text col-md-4 d-flex justify-content-center align-items-center" style="text-transform: none;" >
 
-                                <span class="col-md-4"> 
-                                    <a th:href="@{/liste_campaign_periode(id_campaign=${campaign.id})}" class="btn btn-primary">Voir les periodes</a> 
+                                <span class="col-md-4 d-flex justify-content-center"> 
+                                    <button type="button" class="btn btn-secondary" th:onclick="'window.location.href=\'/liste_campaign_periode?id_campaign=' + ${campaign.id} + '\''">
+                                        <i class="fa fa-calendar"></i>
+                                    </button>
+                                    <!-- <a th:href="@{/liste_campaign_periode(id_campaign=${campaign.id})}" class="btn btn-secondary">
+                                        <i class="fa fa-calendar"></i>
+                                    </a>  -->
                                 </span>
                                 
-                                <span class="col-md-4"> 
+                                <span class="col-md-4 d-flex justify-content-center"> 
                                     <button type="button" class="btn btn-secondary"
                                             th:data-type_campaign="${campaign.type.name}" 
                                             th:data-url_video="${campaign.campaign_video.urlVideo}"
@@ -118,9 +123,9 @@
                                     </button>
                                 </span>
 
-                                <span class="col-md-4"> 
-                                    <button type="button" th:attr="onclick='openCampaignModal(' + ${campaign.id} + ')'"  class="btn btn-primary">
-                                        <i class="fa fa-anchor"></i>
+                                <span class="col-md-4 d-flex justify-content-center"> 
+                                    <button type="button" th:attr="onclick='openCampaignModal(' + ${campaign.id} + ')'"  class="btn btn-secondary">
+                                        <i class="fa fa-bar-chart"></i>
                                     </button>
                                 </span>
 

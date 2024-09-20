@@ -317,7 +317,7 @@ public class CampaignServiceImpl implements CampaignService{
             List<Campaign_periode> campaignPeriodes = new ArrayList<>();
             for (int periode = 0; periode < dates_periode.size(); periode++) {
                 Campaign_periode campaign_periode = new Campaign_periode();
-                campaign_periode.setOrdre((long)periode);
+                campaign_periode.setOrdre((long)periode + 1);
                 campaign_periode.setStart_date(dates_periode.get(periode).getStart());
                 campaign_periode.setEnd_date(dates_periode.get(periode).getEnd());
                 campaign_periode.setBudget_periode(budget_periode);
